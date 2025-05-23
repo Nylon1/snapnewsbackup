@@ -1,0 +1,11 @@
+const mongoose = require('mongoose');
+
+const contentSchema = new mongoose.Schema({
+  title: { type: String, required: true },
+  mediaUrl: { type: String },
+  type: { type: String, enum: ['video', 'image'], required: true },
+  status: { type: String, enum: ['pending', 'approved', 'rejected'], default: 'pending' },
+  createdAt: { type: Date, default: Date.now }
+});
+
+module.exports = mongoose.model('Content', contentSchema);

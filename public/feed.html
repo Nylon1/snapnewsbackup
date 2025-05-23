@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SnapNews – Feed</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-black text-white font-sans">
+
+  <!-- Header -->
+  <header class="text-center py-6">
+    <img src="/img/logo.png" alt="SnapNews Logo" class="mx-auto h-10" />
+    <h1 class="text-3xl font-bold mt-2 text-yellow-400">Snap Feed</h1>
+    <p class="text-gray-400 text-sm">Watch the latest 60-second Snaps shared by users</p>
+  </header>
+
+  <!-- Feed -->
+  <section id="feed" class="max-w-3xl mx-auto px-4 py-10 space-y-6">
+    <p class="text-center text-gray-400">Loading approved content...</p>
+  </section>
+
+  <script>
+    const API_URL = 'https://snap-news-backend.onrender.com/public/approved';
+    const feed = document.getElementById('feed');
+
+    async function loadSnaps() {
+      try {
+        const res = await fetch(API_URL);
+        const data = await res.json();
+
+        if (!Array.isArray(data) || !data.length) {
+          feed.innerHTML = '<p class="text-center text-gray-500">No approved snaps yet.</p>';
+          return;
+        }
+
+        feed.innerHTML = data.map(snap => `
+          <div class="bg-white/10 p-4 rounded-lg shadow border border-white/10">
+            <h2 class="text-yellow-300 text-lg font-semibold mb-2">${snap.title || 'Untitled Snap'}</h2>
+            <video src="${snap.videoUrl}" controls class="w-full rounded mb-2"></video>
+            <p class="text-gray-400 text-sm">Posted: ${new Date(snap.createdAt).toLocaleString()}</p>
+          </div>
+        `).join('');
+      } catch (err) {
+        console.error('❌ Error loading feed:', err);
+        feed.innerHTML = '<p class="text-center text-red-500">⚠️ Failed to load content.</p>';
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', loadSnaps);
+  </script>
+
+</body>
+</html>
+
