@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const Content = require('../models/Content');
+const Content = require('../models/content');
 
 // Get all pending videos
 router.get('/admin/pending', async (req, res) => {
