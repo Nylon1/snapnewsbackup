@@ -6,7 +6,7 @@ const path      = require('path');
 const fs        = require('fs');
 const ffmpeg    = require('fluent-ffmpeg');
 const router    = express.Router();
-const Content   = require('../../models/Content');
+const Content = require('../models/content');
 
 // Directories
 const uploadsDir = path.join(__dirname, '..', 'public', 'uploads');
