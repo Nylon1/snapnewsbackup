@@ -8,11 +8,11 @@ const cors     = require('cors');
 const path     = require('path');
 
 // Route imports
-const uploadRoute = require('./routes/upload');
-const adminController = require('./controllers/adminController');
-const adminRoutes   = require('./routes/admin');
+const uploadRoute = require('../routes/upload');
+const adminController = require('../controllers/adminController');
+const adminRoutes   = require('../routes/admin');
 const publicRoutes  = require('./routes/public');
-const { authenticateAdmin } = require('./middleware/auth');
+const { authenticateAdmin } = require('../middleware/auth');
 const { authenticateAdmin } = require('../middleware/auth');
 
 const app = express();
