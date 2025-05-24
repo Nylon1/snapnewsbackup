@@ -83,14 +83,15 @@
       // configure and send
       xhr.open('POST', API_BASE + '/upload');
 
-      xhr.onload = () => {
-        if (xhr.status === 200) {
-          // redirect into the backend-served feed
-          window.location.href = API_BASE + '/feed';
-        } else {
-          alert('Upload failed: ' + xhr.responseText);
-        }
-      };
+   xhr.onload = () => {
+  if (xhr.status >= 200 && xhr.status < 300) {
+    // redirect into the backend-served feed
+    window.location.href = API_BASE + '/feed';
+  } else {
+    alert('Upload failed: ' + xhr.responseText);
+  }
+};
+
 
       xhr.onerror = () => alert('Network error during upload');
       xhr.send(formData);
