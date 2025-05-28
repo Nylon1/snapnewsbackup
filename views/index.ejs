@@ -7,45 +7,61 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     body { font-family: 'Segoe UI', sans-serif; }
+    /* Glow for Trending Now (yellow/orange) */
+    .glow-trending {
+      box-shadow: 0 0 24px 0 #ffbb0080, 0 2px 12px #0005;
+      animation: glowTrending 2s infinite alternate;
+    }
+    @keyframes glowTrending {
+      0% { box-shadow: 0 0 16px 0 #ffbb0055, 0 2px 12px #0005; }
+      60% { box-shadow: 0 0 40px 0 #ffbb00cc, 0 2px 20px #ffbb0022, 0 2px 20px #0005; }
+      100% { box-shadow: 0 0 16px 0 #ffbb00aa, 0 2px 12px #0005; }
+    }
+    /* Glow for Snapper of the Week (pink) */
+    .glow-snapper {
+      box-shadow: 0 0 24px 0 #ff53b880, 0 2px 12px #0005;
+      animation: glowSnapper 2.2s infinite alternate;
+    }
+    @keyframes glowSnapper {
+      0% { box-shadow: 0 0 16px 0 #ff53b855, 0 2px 12px #0005; }
+      60% { box-shadow: 0 0 40px 0 #ff53b8cc, 0 2px 20px #ff53b822, 0 2px 20px #0005; }
+      100% { box-shadow: 0 0 16px 0 #ff53b8aa, 0 2px 12px #0005; }
+    }
+    @keyframes fadein { from { opacity: 0; transform: translateY(-10px);} to { opacity: 1; transform: none;}}
+    .animate-fadein { animation: fadein 0.18s;}
   </style>
 </head>
 <body class="bg-black text-white min-h-screen flex flex-col">
-<body class="bg-black text-white min-h-screen flex flex-col">
 
   <!-- User Icon Dropdown (top-right) -->
-<div class="absolute top-6 right-8 z-50 group flex flex-col items-end">
-  <button id="userMenuBtn" class="bg-[#232b3c] hover:bg-yellow-400/20 p-2 rounded-full shadow transition flex items-center focus:outline-none">
-    <!-- Simple User SVG -->
-    <svg width="32" height="32" fill="none" viewBox="0 0 32 32">
-      <circle cx="16" cy="12" r="7" fill="#aaa"/>
-      <ellipse cx="16" cy="24" rx="10" ry="6" fill="#aaa"/>
-    </svg>
-  </button>
-  <!-- Dropdown Menu -->
-  <div id="userMenuDropdown"
-    class="hidden mt-2 w-36 bg-[#232b3c] text-white rounded-xl shadow-lg border border-gray-700 py-2 flex flex-col animate-fadein">
-    <a href="/login" class="px-5 py-2 hover:bg-yellow-400/20 transition text-left">Snap In</a>
-    <a href="/signup" class="px-5 py-2 hover:bg-yellow-400/20 transition text-left">Snap Up</a>
+  <div class="absolute top-6 right-8 z-50 group flex flex-col items-end">
+    <button id="userMenuBtn" class="bg-[#232b3c] hover:bg-yellow-400/20 p-2 rounded-full shadow transition flex items-center focus:outline-none">
+      <!-- Simple User SVG -->
+      <svg width="32" height="32" fill="none" viewBox="0 0 32 32">
+        <circle cx="16" cy="12" r="7" fill="#aaa"/>
+        <ellipse cx="16" cy="24" rx="10" ry="6" fill="#aaa"/>
+      </svg>
+    </button>
+    <!-- Dropdown Menu -->
+    <div id="userMenuDropdown"
+      class="hidden mt-2 w-36 bg-[#232b3c] text-white rounded-xl shadow-lg border border-gray-700 py-2 flex flex-col animate-fadein">
+      <a href="/login" class="px-5 py-2 hover:bg-yellow-400/20 transition text-left">Snap In</a>
+      <a href="/signup" class="px-5 py-2 hover:bg-yellow-400/20 transition text-left">Snap Up</a>
+    </div>
   </div>
-</div>
 
-<script>
-  // Toggle dropdown on click
-  const btn = document.getElementById('userMenuBtn');
-  const dropdown = document.getElementById('userMenuDropdown');
-  document.addEventListener('click', (e) => {
-    if (btn.contains(e.target)) {
-      dropdown.classList.toggle('hidden');
-    } else if (!dropdown.contains(e.target)) {
-      dropdown.classList.add('hidden');
-    }
-  });
-</script>
-<style>
-  @keyframes fadein { from { opacity: 0; transform: translateY(-10px);} to { opacity: 1; transform: none;}}
-  .animate-fadein { animation: fadein 0.18s;}
-</style>
-
+  <script>
+    // Toggle dropdown on click
+    const btn = document.getElementById('userMenuBtn');
+    const dropdown = document.getElementById('userMenuDropdown');
+    document.addEventListener('click', (e) => {
+      if (btn.contains(e.target)) {
+        dropdown.classList.toggle('hidden');
+      } else if (!dropdown.contains(e.target)) {
+        dropdown.classList.add('hidden');
+      }
+    });
+  </script>
 
   <!-- HEADER -->
   <header class="w-full py-8 flex flex-col items-center">
@@ -69,46 +85,46 @@
   <!-- GRID SECTION -->
   <main class="flex-1 w-full flex justify-center">
     <div class="w-full max-w-4xl px-3 flex flex-col md:flex-row gap-8 items-start mx-auto">
-     <!-- LEFT: Trending -->
-<section class="flex-1 w-full flex flex-col items-center md:items-start">
-  <div class="bg-[#232b3c] rounded-2xl p-6 shadow-lg w-full max-w-xs mx-auto glow-trending">
-    <div class="text-yellow-400 text-xl font-semibold flex items-center gap-2 mb-4">
-      <span>🔥</span> Trending Now
-    </div>
-    <div class="bg-[#343c4d] rounded-lg p-3 mb-2 flex flex-col items-start">
-      <div class="w-32 h-20 bg-[#232a3c] rounded mb-2"></div>
-      <div class="text-white text-base font-medium">Funny Dog Jump <span class="text-yellow-400">#pets</span></div>
-    </div>
-  </div>
-</section>
-<!-- RIGHT: Snapper of the Week -->
-<section class="flex-1 w-full flex flex-col items-center md:items-end">
-  <div class="bg-[#181e29] rounded-2xl p-8 shadow-lg w-full max-w-xs mx-auto glow-snapper">
-    <div class="text-pink-400 text-xl font-semibold mb-4 flex items-center gap-2 justify-center">
-      <span>🌟</span> Snapper of the Week
-    </div>
-    <div class="flex flex-col items-center">
-      <div class="w-24 h-24 rounded-full border-4 border-pink-400 flex items-center justify-center text-2xl text-yellow-400 mb-3 bg-[#232b3c]">
-        S
-      </div>
-      <div class="font-bold text-lg mb-1 text-white">@SnapQueen</div>
-      <div class="text-gray-300 text-center text-base">Uploaded the most loved Snap of the week 🎉</div>
-    </div>
-  </div>
-</section>req  
+      <!-- LEFT: Trending -->
+      <section class="flex-1 w-full flex flex-col items-center md:items-start">
+        <div class="bg-[#232b3c] rounded-2xl p-6 shadow-lg w-full max-w-xs mx-auto glow-trending">
+          <div class="text-yellow-400 text-xl font-semibold flex items-center gap-2 mb-4">
+            <span>🔥</span> Trending Now
+          </div>
+          <div class="bg-[#343c4d] rounded-lg p-3 mb-2 flex flex-col items-start">
+            <div class="w-32 h-20 bg-[#232a3c] rounded mb-2"></div>
+            <div class="text-white text-base font-medium">Funny Dog Jump <span class="text-yellow-400">#pets</span></div>
+          </div>
+        </div>
+      </section>
+      <!-- RIGHT: Snapper of the Week -->
+      <section class="flex-1 w-full flex flex-col items-center md:items-end">
+        <div class="bg-[#181e29] rounded-2xl p-8 shadow-lg w-full max-w-xs mx-auto glow-snapper">
+          <div class="text-pink-400 text-xl font-semibold mb-4 flex items-center gap-2 justify-center">
+            <span>🌟</span> Snapper of the Week
+          </div>
+          <div class="flex flex-col items-center">
+            <div class="w-24 h-24 rounded-full border-4 border-pink-400 flex items-center justify-center text-2xl text-yellow-400 mb-3 bg-[#232b3c]">
+              S
+            </div>
+            <div class="font-bold text-lg mb-1 text-white">@SnapQueen</div>
+            <div class="text-gray-300 text-center text-base">Uploaded the most loved Snap of the week 🎉</div>
+          </div>
+        </div>
+      </section>
     </div>
   </main>
 
-<!-- Footer -->
-<footer class="w-full flex flex-col items-center mt-10 mb-4">
-  <div class="flex flex-wrap gap-6 justify-center items-center mb-2">
-    <a href="/privacy" class="text-gray-400 hover:text-yellow-400 text-sm transition">Privacy Policy</a>
-    <a href="/terms" class="text-gray-400 hover:text-yellow-400 text-sm transition">Terms</a>
-    <a href="/cookies" class="text-gray-400 hover:text-yellow-400 text-sm transition">Cookies</a>
-    <a href="/contact" class="text-gray-400 hover:text-yellow-400 text-sm transition">Contact</a>
-  </div>
-  <div class="text-xs text-gray-600">&copy; <%= new Date().getFullYear() %> SnapNews. All rights reserved.</div>
-</footer>
+  <!-- Footer -->
+  <footer class="w-full flex flex-col items-center mt-10 mb-4">
+    <div class="flex flex-wrap gap-6 justify-center items-center mb-2">
+      <a href="/privacy" class="text-gray-400 hover:text-yellow-400 text-sm transition">Privacy Policy</a>
+      <a href="/terms" class="text-gray-400 hover:text-yellow-400 text-sm transition">Terms</a>
+      <a href="/cookies" class="text-gray-400 hover:text-yellow-400 text-sm transition">Cookies</a>
+      <a href="/contact" class="text-gray-400 hover:text-yellow-400 text-sm transition">Contact</a>
+    </div>
+    <div class="text-xs text-gray-600">&copy; <%= new Date().getFullYear() %> SnapNews. All rights reserved.</div>
+  </footer>
 
 </body>
 </html>
