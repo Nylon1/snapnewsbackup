@@ -1,89 +1,19 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <title>SnapNews – Home</title>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    body { font-family: 'Segoe UI', sans-serif; }
-  </style>
-</head>
-
-<body class="bg-black text-white min-h-screen">
-
-  <!-- Header -->
-  <header class="text-center py-10 px-4">
-    <img src="/favicon.png" alt="SnapNews Logo" class="w-16 h-16 mx-auto mb-2">
-    <h1 class="text-4xl sm:text-5xl font-extrabold text-yellow-400 mb-2">SnapNews</h1>
-    <p class="text-gray-300 text-base sm:text-lg max-w-md mx-auto">
-      Share your story in 60 seconds. Watch it vanish in 24 hours.
-    </p>
-    <div class="mt-6 flex flex-col sm:flex-row justify-center items-center gap-4">
-      <a href="/upload"
-         class="bg-yellow-400 hover:bg-yellow-300 text-black font-bold px-6 py-3 rounded-full text-sm sm:text-base">
-         Upload a Video
-      </a>
-      <a href="/feed"
-         class="bg-white/10 hover:bg-white/20 text-white border border-white px-6 py-3 rounded-full text-sm sm:text-base">
-         Watch Snaps
-      </a>
-    </div>
-  </header>
-
-  <!-- Trending and Snapper of the Week (side by side on desktop, stacked on mobile) -->
-  <section class="flex flex-col md:flex-row gap-8 px-4 py-8 bg-gray-900 max-w-6xl mx-auto">
-    <!-- Trending Section -->
-    <div class="flex-1">
-      <h2 class="text-2xl font-semibold mb-4 text-yellow-400 text-center md:text-left">Trending Now</h2>
-      <div class="flex gap-4 overflow-x-auto snap-x snap-mandatory px-1">
-        <% if (trendingSnaps && trendingSnaps.length) { %>
-          <% trendingSnaps.forEach(function(snap) { %>
-            <div class="snap-start bg-gray-800 rounded-lg p-3 min-w-[250px] flex-shrink-0">
-              <video controls class="rounded-md w-full" poster="<%= snap.thumbnail %>">
-                <source src="<%= snap.url %>" type="video/mp4">
-              </video>
-              <h3 class="text-base font-semibold mt-2"><%= snap.title %></h3>
-              <p class="text-xs text-gray-400"><%= snap.tags %></p>
-            </div>
-          <% }); %>
-        <% } else { %>
-          <div class="text-gray-400 p-6">No trending snaps right now.</div>
-        <% } %>
-      </div>
-    </div>
-    <!-- Snapper of the Week -->
-    <div class="flex-1 flex items-center justify-center">
-      <div class="bg-[#181e29] rounded-2xl p-8 shadow-lg w-full max-w-xs">
-        <div class="text-pink-400 text-xl font-semibold mb-4 flex items-center gap-2 justify-center">
-          <span>🌟</span> Snapper of the Week
-        </div>
-        <% if (snapperOfTheWeek) { %>
-          <div class="flex flex-col items-center">
-            <img src="<%= snapperOfTheWeek.avatar %>" alt="Snapper Avatar" class="w-20 h-20 rounded-full border-4 border-pink-400 mb-3 bg-[#232b3c] object-cover" />
-            <div class="font-bold text-lg mb-1 text-white"><%= snapperOfTheWeek.username %></div>
-            <div class="text-gray-300 text-center text-base mb-3"><%= snapperOfTheWeek.bio %></div>
-            <% if (snapperOfTheWeek.highlightVideoUrl) { %>
-              <video controls class="rounded-md w-full mt-2" style="max-width:210px;">
-                <source src="<%= snapperOfTheWeek.highlightVideoUrl %>" type="video/mp4">
-              </video>
-            <% } %>
-          </div>
-        <% } else { %>
-          <div class="text-gray-400 text-center">No Snapper selected yet.</div>
-        <% } %>
-      </div>
-    </div>
-  </section>
-
-  <!-- App Prompt -->
-  <section class="text-center px-4 py-10">
-    <h2 class="text-lg sm:text-xl font-semibold text-yellow-400 mb-2">Add SnapNews to your Home Screen</h2>
-    <p class="text-gray-400 max-w-md mx-auto text-sm">
-      Tap your browser menu and choose "Add to Home Screen" for quick access.
-    </p>
-    <img src="/favicon.png" alt="Snap Icon" class="w-12 h-12 mx-auto my-4" />
-    <p class="text-xs text-gray-600">SnapNews © 2025</p>
-  </section>
-</body>
-</html>
+<header class="text-center py-10 px-4">
+  <div class="flex flex-col items-center mb-2">
+    <span class="text-6xl" aria-label="SnapNews Fire Logo" title="SnapNews">🔥</span>
+  </div>
+  <h1 class="text-4xl sm:text-5xl font-extrabold text-yellow-400 mb-2">SnapNews</h1>
+  <p class="text-gray-300 text-base sm:text-lg max-w-md mx-auto">
+    Share your story in 60 seconds. Watch it vanish in 24 hours.
+  </p>
+  <div class="mt-6 flex flex-col sm:flex-row justify-center items-center gap-4">
+    <a href="/upload"
+       class="bg-yellow-400 hover:bg-yellow-300 text-black font-bold px-6 py-3 rounded-full text-sm sm:text-base">
+       Upload a Video
+    </a>
+    <a href="/feed"
+       class="bg-white/10 hover:bg-white/20 text-white border border-white px-6 py-3 rounded-full text-sm sm:text-base">
+       Watch Snaps
+    </a>
+  </div>
+</header>
