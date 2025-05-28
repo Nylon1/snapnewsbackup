@@ -7,14 +7,14 @@
   <meta property="og:url" content="https://snap-news.onrender.com/watch/<%= video.friendly_token %>" />
   <meta property="og:title" content="<%= video.title %> | SnapNews" />
   <meta property="og:description" content="<%= video.description || 'Watch the latest SnapNews video!' %>" />
-  <meta property="og:image" content="<%= video.thumbnail_url.startsWith('http') ? video.thumbnail_url : ('https://mediacms-cw-u46015.vm.elestio.app' + video.thumbnail_url) %>" />
+  <meta property="og:image" content="<%= video.thumbnail_url && video.thumbnail_url.startsWith('http') ? video.thumbnail_url : 'https://mediacms-cw-u46015.vm.elestio.app' + video.thumbnail_url %>" />
   <meta property="og:image:width" content="800" />
   <meta property="og:image:height" content="450" />
   <!-- Twitter Card tags -->
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="<%= video.title %> | SnapNews" />
   <meta name="twitter:description" content="<%= video.description || 'Watch the latest SnapNews video!' %>" />
-  <meta name="twitter:image" content="<%= video.thumbnail_url.startsWith('http') ? video.thumbnail_url : ('https://mediacms-cw-u46015.vm.elestio.app' + video.thumbnail_url) %>" />
+  <meta name="twitter:image" content="<%= video.thumbnail_url && video.thumbnail_url.startsWith('http') ? video.thumbnail_url : 'https://mediacms-cw-u46015.vm.elestio.app' + video.thumbnail_url %>" />
 
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -25,11 +25,37 @@
 </head>
 <body class="bg-black text-white min-h-screen flex flex-col items-center justify-center">
 
+<%
+  // Robust video selection
+  let videoUrl = null;
+  let encodings = video.encodings_info || {};
+  let order = ["720", "480", "360", "240"];
+  for (let q of order) {
+    if (encodings[q] && encodings[q].h264 && encodings[q].h264.url) {
+      videoUrl = encodings[q].h264.url.startsWith('http')
+        ? encodings[q].h264.url
+        : 'https://mediacms-cw-u46015.vm.elestio.app' + encodings[q].h264.url;
+      break;
+    }
+  }
+  // fallback: original file
+  if (!videoUrl && video.original_media_url) {
+    videoUrl = video.original_media_url.startsWith('http')
+      ? video.original_media_url
+      : 'https://mediacms-cw-u46015.vm.elestio.app' + video.original_media_url;
+  }
+  // Thumbnail
+  let thumbUrl = video.thumbnail_url
+    ? (video.thumbnail_url.startsWith('http')
+        ? video.thumbnail_url
+        : 'https://mediacms-cw-u46015.vm.elestio.app' + video.thumbnail_url)
+    : '';
+%>
+
   <div class="w-full max-w-xl bg-gray-900 rounded-lg shadow-lg p-8 mt-10">
     <div class="mb-5">
-      <video class="w-full rounded shadow-lg" controls autoplay
-        poster="<%= video.thumbnail_url.startsWith('http') ? video.thumbnail_url : 'https://mediacms-cw-u46015.vm.elestio.app' + video.thumbnail_url %>">
-        <source src="<%= video.file.startsWith('http') ? video.file : 'https://mediacms-cw-u46015.vm.elestio.app' + video.file %>" type="video/mp4">
+      <video class="w-full rounded shadow-lg" controls autoplay poster="<%= thumbUrl %>">
+        <source src="<%= videoUrl %>" type="video/mp4">
         Sorry, your browser doesn't support embedded videos.
       </video>
     </div>
