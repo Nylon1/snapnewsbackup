@@ -5,6 +5,7 @@ const router = express.Router();
 router.get('/', async (req, res) => {
   try {
     const response = await fetch('https://mediacms-cw-u46015.vm.elestio.app/api/v1/media/');
+    if (!response.ok) throw new Error(`MediaCMS returned ${response.status}`);
     const data = await response.json();
     const now = new Date();
     const videos = (data.results || []).filter(video => {
@@ -15,19 +16,7 @@ router.get('/', async (req, res) => {
     });
     res.render('feed', { videos });
   } catch (err) {
+    console.error('Error fetching videos:', err);
     res.render('feed', { videos: [], error: "Error loading videos." });
   }
 });
-
-module.exports = router;
-
-
-
-
-
-
-
-
-
-
-
