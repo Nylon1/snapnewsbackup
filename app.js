@@ -4,7 +4,7 @@ const app = express();
 const path = require('path');
 const mongoose = require('mongoose');
 const mediacmsRoutes = require('./routes/mediacms');
-const feedRoute = require('./routes/feed'); // Adjust path as needed
+const feedRoute = require('./routes/feedroute'); // Adjust path as needed
 
 require('dotenv').config();
 
