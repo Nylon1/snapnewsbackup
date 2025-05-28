@@ -1,19 +1,33 @@
-<header class="text-center py-10 px-4">
-  <div class="flex flex-col items-center mb-2">
-    <span class="text-6xl" aria-label="SnapNews Fire Logo" title="SnapNews">🔥</span>
-  </div>
-  <h1 class="text-4xl sm:text-5xl font-extrabold text-yellow-400 mb-2">SnapNews</h1>
-  <p class="text-gray-300 text-base sm:text-lg max-w-md mx-auto">
-    Share your story in 60 seconds. Watch it vanish in 24 hours.
-  </p>
-  <div class="mt-6 flex flex-col sm:flex-row justify-center items-center gap-4">
-    <a href="/upload"
-       class="bg-yellow-400 hover:bg-yellow-300 text-black font-bold px-6 py-3 rounded-full text-sm sm:text-base">
-       Upload a Video
-    </a>
-    <a href="/feed"
-       class="bg-white/10 hover:bg-white/20 text-white border border-white px-6 py-3 rounded-full text-sm sm:text-base">
-       Watch Snaps
-    </a>
-  </div>
-</header>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>SnapNews – Home</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; }
+  </style>
+</head>
+<body class="bg-black text-white min-h-screen flex flex-col">
+  <!-- HEADER -->
+  <header class="w-full py-8 flex flex-col items-center">
+    <span class="text-6xl mb-2" aria-label="Fire Logo" title="SnapNews">🔥</span>
+    <h1 class="text-4xl sm:text-5xl font-extrabold text-yellow-400 mb-2">SnapNews</h1>
+    <p class="text-gray-300 text-base sm:text-lg max-w-md text-center mb-4">
+      Share your story in 60 seconds. Watch it vanish in 24 hours.
+    </p>
+    <div class="flex flex-col sm:flex-row justify-center items-center gap-4">
+      <a href="/upload"
+         class="bg-yellow-400 hover:bg-yellow-300 text-black font-bold px-6 py-3 rounded-full text-sm sm:text-base">
+         Upload a Video
+      </a>
+      <a href="/feed"
+         class="bg-white/10 hover:bg-white/20 text-white border border-white px-6 py-3 rounded-full text-sm sm:text-base">
+         Watch Snaps
+      </a>
+    </div>
+  </header>
+
+  <!-- MAIN GRID -->
+  <main class="flex-1 w-full flex justify-center
