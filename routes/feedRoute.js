@@ -14,10 +14,11 @@ router.get('/', async (req, res) => {
       const created = new Date(video.created_at);
       return (now - created) < (24 * 60 * 60 * 1000);
     });
-    res.render('feed', { videos });
+    res.render('feed', { videos, error: null }); // <-- pass error: null when no error
   } catch (err) {
     console.error('Error fetching videos:', err);
     res.render('feed', { videos: [], error: "Error loading videos." });
   }
 });
+
 module.exports = router;
