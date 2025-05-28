@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>SnapNews Feed - Last 24 Hours</title>
+  <title>SnapNews Video Feed (Last 24 Hours)</title>
   <style>
     body {
       font-family: 'Segoe UI', Arial, sans-serif;
@@ -25,33 +25,47 @@
       gap: 2.5rem;
       justify-content: center;
       margin: 2.5rem auto;
-      max-width: 1500px;
+      max-width: 1600px;
     }
     .video-card {
-      background: #191e2c;
+      background: #181d26;
       border-radius: 2rem;
-      padding: 1.5rem 1.25rem;
-      box-shadow: 0 2px 32px 6px #ffd90022, 0 1px 8px 1px #000c;
-      transition: box-shadow 0.2s, border 0.2s;
+      padding: 1.5rem 1.25rem 1.25rem 1.25rem;
       width: 370px;
-      border: 2px solid transparent;
+      box-shadow: 0 0 32px 2px #ffd90066, 0 4px 32px 12px #ffd90022, 0 1px 8px 1px #000a;
+      border: 2px solid #232b3c;
+      position: relative;
+      transition: 
+        box-shadow 0.3s cubic-bezier(.4,2.2,.3,1), 
+        border 0.2s,
+        transform 0.2s;
       display: flex;
       flex-direction: column;
       align-items: center;
-      position: relative;
+      animation: cardGlow 2.5s infinite alternate;
+    }
+    @keyframes cardGlow {
+      0% {
+        box-shadow: 0 0 28px 2px #ffd90033, 0 4px 24px 8px #ffd90011, 0 1px 8px 1px #000c;
+      }
+      100% {
+        box-shadow: 0 0 50px 8px #ffd90099, 0 8px 32px 16px #ffd90033, 0 2px 10px 2px #000b;
+      }
     }
     .video-card:hover {
-      box-shadow: 0 4px 32px 12px #ffd90099, 0 2px 16px 2px #000a;
+      box-shadow: 0 0 80px 20px #ffd900cc, 0 2px 32px 8px #ffd90044, 0 1px 8px 1px #000;
       border: 2px solid #ffd900;
-      cursor: pointer;
+      transform: translateY(-6px) scale(1.04);
+      z-index: 2;
     }
     .title {
       font-weight: bold;
       font-size: 1.18rem;
       margin-bottom: 0.6rem;
       color: #ffd900;
-      text-shadow: 0 1px 6px #000;
+      text-shadow: 0 1px 8px #000;
       text-align: center;
+      word-break: break-all;
     }
     .date {
       color: #b9b9b9;
@@ -59,13 +73,19 @@
       margin-bottom: 1.1rem;
       text-align: center;
     }
-    video {
+    video, img {
       width: 100%;
       border-radius: 1.3rem;
       outline: none;
       background: #11141a;
       box-shadow: 0 0 14px 1px #000c;
       margin-bottom: 0.6rem;
+    }
+    .fallback {
+      color: #ffd900;
+      font-size: 1rem;
+      text-align: center;
+      margin-top: 1rem;
     }
     @media (max-width: 700px) {
       #feed { gap: 1rem; }
@@ -85,8 +105,17 @@
       <% videos.forEach(function(video) { %>
         <div class="video-card">
           <div class="title"><%= video.title || "Untitled" %></div>
-          <div class="date">Uploaded: <%= new Date(video.created_at).toLocaleString() %></div>
-          <video src="<%= video.file %>" controls <%= video.thumbnail ? 'poster="' + video.thumbnail + '"' : '' %>></video>
+          <div class="date">Uploaded: <%= new Date(video.add_date).toLocaleString() %></div>
+          <% if (video.file) { %>
+            <video src="<%= video.file %>" controls poster="<%= video.thumbnail_url %>"></video>
+          <% } else { %>
+            <a href="<%= video.url %>" target="_blank">
+              <img src="<%= video.thumbnail_url %>" alt="Thumbnail">
+            </a>
+            <div class="fallback">Direct video unavailable.<br>
+              <a href="<%= video.url %>" style="color:#ffd900;" target="_blank">Watch on SnapNews</a>
+            </div>
+          <% } %>
         </div>
       <% }); %>
     <% } %>
