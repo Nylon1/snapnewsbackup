@@ -4,6 +4,8 @@ const app = express();
 const path = require('path');
 const mongoose = require('mongoose');
 const mediacmsRoutes = require('./routes/mediacms');
+const feedRoute = require('./routes/feed'); // Adjust path as needed
+
 require('dotenv').config();
 
 // Ensure uploads directory exists for multer
