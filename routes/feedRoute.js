@@ -2,7 +2,7 @@ const express = require('express');
 const fetch = require('node-fetch');
 const router = express.Router();
 
-router.get('/feed', async (req, res) => {
+router.get('/', async (req, res) => {
   try {
     const response = await fetch('https://mediacms-cw-u46015.vm.elestio.app/api/v1/media/');
     const data = await response.json();
@@ -20,7 +20,6 @@ router.get('/feed', async (req, res) => {
 });
 
 module.exports = router;
-
 
 
 
