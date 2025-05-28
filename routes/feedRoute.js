@@ -3,17 +3,15 @@ const express = require('express');
 const axios = require('axios');
 const router = express.Router();
 
-// Update this if your backend API runs on a different host/port
-const MEDIACMS_API = 'http://localhost:3000/api/mediacms/videos';
+// Use the deployed API URL for production
+const MEDIACMS_API = process.env.NODE_ENV === 'production'
+   'https://snap-news.onrender.com/api/mediacms/videos'
 
-// Main feed route
 router.get('/feed', async (req, res) => {
   try {
-    // Fetch videos from MediaCMS via your API proxy
     const response = await axios.get(MEDIACMS_API);
-    const videos = response.data; // Array of video objects from MediaCMS
+    const videos = response.data;
 
-    // Optionally, add an expiresAt field if you want to display expiry (24h)
     const enrichedVideos = videos.map(video => ({
       ...video,
       expiresAt: video.created_at
@@ -21,9 +19,7 @@ router.get('/feed', async (req, res) => {
         : null
     }));
 
-    // Render to EJS (or return JSON)
     res.render('feed', { videos: enrichedVideos });
-
   } catch (err) {
     console.error('❌ Error loading feed:', err.response?.data || err.message);
     res.status(500).send('Server error loading feed.');
@@ -31,3 +27,20 @@ router.get('/feed', async (req, res) => {
 });
 
 module.exports = router;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
