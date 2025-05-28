@@ -41,7 +41,7 @@ app.use('/api/mediacms', mediacmsRoutes);
 
 // 6. Other routes (order doesn't matter after above)
 const uploadRoute = require('./routes/upload');
-const feedRoute = require('./routes/feedRoute');
+
 const watchRoute = require('./routes/watchRoute');
 const adminRoutes = require('./routes/admin');
 app.use('/admin', adminRoutes);
