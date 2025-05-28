@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <head>
   <title><%= video.title %> | SnapNews</title>
   <!-- Open Graph tags -->
   <meta property="og:type" content="video.other" />
@@ -12,18 +11,11 @@
   <meta property="og:image:width" content="800" />
   <meta property="og:image:height" content="450" />
   <!-- Twitter Card tags -->
-  <meta name="twitter:card" content="player" />
+  <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="<%= video.title %> | SnapNews" />
   <meta name="twitter:description" content="<%= video.description || 'Watch the latest SnapNews video!' %>" />
   <meta name="twitter:image" content="<%= video.thumbnail_url.startsWith('http') ? video.thumbnail_url : ('https://mediacms-cw-u46015.vm.elestio.app' + video.thumbnail_url) %>" />
-  <!-- Optionally: Twitter video player card (advanced) -->
-  <!-- <meta name="twitter:player" content="https://snap-news.onrender.com/watch/<%= video.friendly_token %>"> -->
-  <!-- <meta name="twitter:player:width" content="480"> -->
-  <!-- <meta name="twitter:player:height" content="480"> -->
-  <!-- ...rest of your head -->
-</head>
 
-  <title><%= video.title || 'Watch Snap' %> · SnapNews</title>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <script src="https://cdn.tailwindcss.com"></script>
@@ -36,14 +28,14 @@
   <div class="w-full max-w-xl bg-gray-900 rounded-lg shadow-lg p-8 mt-10">
     <div class="mb-5">
       <video class="w-full rounded shadow-lg" controls autoplay
-        poster="https://mediacms-cw-u46015.vm.elestio.app<%= video.thumbnail %>">
-        <source src="https://mediacms-cw-u46015.vm.elestio.app<%= video.file %>" type="video/mp4">
+        poster="<%= video.thumbnail_url.startsWith('http') ? video.thumbnail_url : 'https://mediacms-cw-u46015.vm.elestio.app' + video.thumbnail_url %>">
+        <source src="<%= video.file.startsWith('http') ? video.file : 'https://mediacms-cw-u46015.vm.elestio.app' + video.file %>" type="video/mp4">
         Sorry, your browser doesn't support embedded videos.
       </video>
     </div>
     <h2 class="text-xl font-bold text-yellow-400 mb-1"><%= video.title || 'Untitled Snap' %></h2>
     <div class="text-gray-300 text-sm mb-4">
-      Uploaded by <span class="font-semibold"><%= video.user?.username || 'Anonymous' %></span> 
+      Uploaded by <span class="font-semibold"><%= video.user?.username || video.user || 'Anonymous' %></span>
       · <%= new Date(video.created_at).toLocaleString() %>
     </div>
     <% if (video.description) { %>
