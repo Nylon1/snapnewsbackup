@@ -4,20 +4,15 @@ const cors      = require('cors');
 const multer    = require('multer');
 const path      = require('path');
 const fs        = require('fs');
-const ffmpeg    = require('fluent-ffmpeg');
+const axios     = require('axios');
+const FormData  = require('form-data');
 const router    = express.Router();
-const Content = require('../models/content');
 
 // Directories
-const uploadsDir = path.join(__dirname, '..', 'public', 'uploads');
-const thumbsDir  = path.join(__dirname, '..', 'public', 'thumbnails');
-const shareDir   = path.join(__dirname, '..', 'public', 'share');
-const templatePath = path.join(__dirname, '..', 'views', 'share_template.html');
+const uploadsDir = path.join(__dirname, '..', 'uploads'); // changed to root uploads folder
 
-// Ensure directories exist
-[uploadsDir, thumbsDir, shareDir].forEach(dir => {
-  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-});
+// Ensure uploads directory exists
+if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
 
 // Multer storage
 const storage = multer.diskStorage({
@@ -26,7 +21,7 @@ const storage = multer.diskStorage({
 });
 const upload = multer({
   storage,
-  limits: { fileSize: 60 * 1024 * 1024 },
+  limits: { fileSize: 60 * 1024 * 1024 }, // 60 MB limit
   fileFilter: (req, file, cb) => {
     const ok = /mp4/.test(file.mimetype) && /\.mp4$/.test(file.originalname.toLowerCase());
     cb(ok ? null : new Error('Only MP4 files are allowed'), ok);
@@ -38,7 +33,7 @@ router.get('/upload', (req, res) => {
   res.render('upload');
 });
 
-// CORS preflight and POST for uploads
+// CORS options
 const corsOptions = {
   origin: 'https://snap-news.onrender.com',
   methods: ['POST','OPTIONS'],
@@ -47,63 +42,36 @@ const corsOptions = {
 
 router.options('/upload', cors(corsOptions));
 
+// Main POST handler: Forwards file to MediaCMS
 router.post(
   '/upload',
   cors(corsOptions),
-  upload.single('video'),
-  (req, res) => {
-    const { title, description, category } = req.body;
+  upload.single('video'), // <-- your form input must be named 'video'
+  async (req, res) => {
     if (!req.file) return res.status(400).send('No video uploaded.');
 
-    const filename     = req.file.filename.replace('.mp4','');
-    const thumbFilename = `${filename}.jpg`;
+    try {
+      // Forward file to your MediaCMS API proxy
+      const form = new FormData();
+      form.append('title', req.body.title || 'Untitled');
+      form.append('file', fs.createReadStream(req.file.path), req.file.originalname);
 
-    // Generate thumbnail
-    ffmpeg(path.join(uploadsDir, req.file.filename))
-      .screenshots({
-        timestamps: ['00:00:01'],
-        filename: thumbFilename,
-        folder: thumbsDir,
-        size: '320x240'
-      })
-      .on('end', async () => {
-        // Save to MongoDB
-        try {
-          const newVideo = new Content({
-            title,
-            description,
-            category,
-            videoUrl: `/uploads/${req.file.filename}`,
-            thumbnail: `/thumbnails/${thumbFilename}`,
-            status: 'pending',
-            type: 'user',
-            createdAt: new Date()
-          });
-          await newVideo.save();
+      // Call the backend proxy endpoint (change localhost:3000 if your API runs elsewhere)
+      const response = await axios.post(
+        'http://localhost:3000/api/mediacms/upload-to-mediacms',
+        form,
+        { headers: form.getHeaders() }
+      );
 
-          // Render share template (or redirect)
-          fs.readFile(templatePath, 'utf8', (err, html) => {
-            if (err) return res.status(500).send('Template error.');
-            const shareHTML = html
-              .replace(/{{TITLE}}/g, title)
-              .replace(/{{DESCRIPTION}}/g, description)
-              .replace(/{{FILENAME}}/g, filename)
-              .replace(/{{THUMBNAIL}}/g, thumbFilename)
-              .replace(/{{ID}}/g, newVideo._id);
-            fs.writeFile(path.join(shareDir, `${filename}.html`), shareHTML, err => {
-              if (err) return res.status(500).send('Share file error.');
-              res.send(shareHTML);
-            });
-          });
-        } catch (dbErr) {
-          console.error(dbErr);
-          res.status(500).send('Database save failed.');
-        }
-      })
-      .on('error', err => {
-        console.error('FFmpeg error:', err);
-        res.status(500).send('Thumbnail generation failed.');
-      });
+      // Clean up temp file
+      fs.unlinkSync(req.file.path);
+
+      // Optionally, show a confirmation or redirect
+      res.send('Video uploaded successfully! (pending approval by admin)');
+    } catch (err) {
+      console.error(err.response?.data || err.message);
+      res.status(500).send('Failed to upload to MediaCMS.');
+    }
   }
 );
 
