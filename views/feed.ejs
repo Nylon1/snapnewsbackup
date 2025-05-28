@@ -13,7 +13,6 @@
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-      /* add mobile padding fallback */
       padding-left: 0;
       padding-right: 0;
     }
@@ -73,7 +72,6 @@
       max-width: 1600px;
       width: 100%;
       transition: gap 0.15s;
-      /* We'll add mobile padding via media query */
     }
     .video-card {
       background: #22243d;
@@ -246,7 +244,7 @@
     <a href="/" class="home-link">&larr; Home</a>
     <div class="logo">SnapNews</div>
   </div>
-  <h1>Video Feed (Last 24 Hours)</h1>
+  <h1>SnapFeed </h1>
   <div id="feed">
     <% if (error) { %>
       <p><%= error %></p>
@@ -254,6 +252,10 @@
       <p>No videos from the last 24 hours.</p>
     <% } else { %>
       <% videos.forEach(function(video, idx) { %>
+        <%
+          const snapnewsBase = "https://snap-news.onrender.com";
+          const videoPageUrl = snapnewsBase + "/watch/" + video.friendly_token;
+        %>
         <div class="video-card" data-date="<%= video.add_date %>" id="card-<%= idx %>">
           <div class="title"><%= video.title || "Untitled" %></div>
           <div class="date">
@@ -263,15 +265,15 @@
           <% if (video.file) { %>
             <video src="<%= video.file %>" controls poster="<%= video.thumbnail_url.startsWith('http') ? video.thumbnail_url : ('https://mediacms-cw-u46015.vm.elestio.app' + video.thumbnail_url) %>"></video>
           <% } else { %>
-            <a href="<%= video.url %>" target="_blank">
+            <a href="<%= videoPageUrl %>" target="_blank">
               <img src="<%= video.thumbnail_url.startsWith('http') ? video.thumbnail_url : ('https://mediacms-cw-u46015.vm.elestio.app' + video.thumbnail_url) %>" alt="Thumbnail">
             </a>
             <div class="fallback">Direct video unavailable.<br>
-              <a href="<%= video.url %>" style="color:#ffd900;" target="_blank">Watch on SnapNews</a>
+              <a href="<%= videoPageUrl %>" style="color:#ffd900;" target="_blank">Watch on SnapNews</a>
             </div>
           <% } %>
           <div class="card-actions">
-            <button class="share-btn" data-url="<%= video.url %>" data-idx="<%= idx %>">
+            <button class="share-btn" data-url="<%= videoPageUrl %>" data-idx="<%= idx %>">
               <svg fill="#191e2c" viewBox="0 0 24 24"><path d="M18 8a3 3 0 1 0-2.83-2H9.83A3 3 0 1 0 9 8h6zm-9 8a3 3 0 1 0 2.83 2h5.34A3 3 0 1 0 15 16H9zm1-7v2h4V9z"/></svg>
               Share
             </button>
