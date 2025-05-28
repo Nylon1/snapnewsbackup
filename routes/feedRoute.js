@@ -20,3 +20,4 @@ router.get('/', async (req, res) => {
     res.render('feed', { videos: [], error: "Error loading videos." });
   }
 });
+module.exports = router;
