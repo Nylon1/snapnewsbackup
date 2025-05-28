@@ -7,40 +7,53 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     body { font-family: 'Segoe UI', sans-serif; }
-    .input-file::-webkit-file-upload-button {
-      visibility: hidden;
+    .custom-file {
+      display: flex;
+      align-items: center;
+      background: #23293a;
+      border-radius: 8px;
+      padding: 0.5rem 1rem;
+      margin-bottom: 1.2rem;
+      justify-content: space-between;
     }
-    .input-file::before {
-      content: 'Choose Video';
-      display: inline-block;
+    .custom-file label {
       background: #ffd500;
       color: #181e29;
-      border-radius: 4px;
-      padding: 0.5rem 1rem;
-      margin-right: 1rem;
-      cursor: pointer;
       font-weight: 600;
+      border-radius: 5px;
+      padding: 0.5rem 1.2rem;
+      cursor: pointer;
+      transition: background 0.18s;
+      margin-right: 1.2rem;
+      border: none;
+      outline: none;
     }
-    .input-file:hover::before {
-      background: #fff3b0;
+    .custom-file label:hover {
+      background: #ffe150;
+    }
+    .custom-file input[type="file"] {
+      display: none;
+    }
+    .file-name {
+      color: #fff;
+      font-size: 0.98rem;
+      opacity: 0.8;
+      word-break: break-all;
     }
   </style>
 </head>
 <body class="bg-black text-white min-h-screen flex flex-col items-center justify-center">
 
-  <div class="w-full max-w-md mt-10 bg-gray-900 rounded-lg shadow-lg p-8">
-    <h2 class="text-2xl font-bold mb-2 text-yellow-400 text-center">Upload a Snap</h2>
+  <div class="w-full max-w-md mt-12 bg-[#161b24] rounded-2xl shadow-lg p-8">
+    <h2 class="text-2xl font-extrabold mb-2 text-yellow-400 text-center">Upload a Snap</h2>
     <p class="text-center text-gray-400 mb-6">Share your video with SnapNews!</p>
     
     <form action="/upload" method="POST" enctype="multipart/form-data" class="flex flex-col gap-4">
-      <input type="file" name="video" accept="video/mp4" required class="input-file w-full py-2 px-3 bg-gray-800 rounded mb-3">
+      <div class="custom-file">
+        <label for="fileInput">Choose Video</label>
+        <input id="fileInput" type="file" name="video" accept="video/mp4" required onchange="updateFileName()">
+        <span class="file-name" id="fileName">No file chosen</span>
+      </div>
       <input type="text" name="title" placeholder="Title (optional)" maxlength="90"
-        class="py-2 px-3 rounded bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400">
-      <button type="submit" class="bg-yellow-400 text-black font-semibold py-2 rounded hover:bg-yellow-300 transition">Upload Snap</button>
-    </form>
-    <div class="mt-6 text-center">
-      <a href="/feed" class="text-yellow-400 hover:underline">Back to Feed</a>
-    </div>
-  </div>
-</body>
-</html>
+        class="py-2 px-3 rounded bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400 transition-all">
+      <button type="submit" class="bg-yellow-400 text-black
