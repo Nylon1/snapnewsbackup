@@ -70,31 +70,8 @@ document.getElementById('uploadForm').addEventListener('submit', async function(
   const progressContainer = document.getElementById('progressContainer');
   progressContainer.style.display = 'block';
 
-  // 1. Get token from your backend
-  let token = '';
-  try {
-    const tokenRes = await fetch(API_BASE + '/api/mediacms-token', { method: 'POST' });
-    const tokenData = await tokenRes.json();
-    if (!tokenData.token) throw new Error('Failed to get token');
-    token = tokenData.token;
-  } catch (err) {
-    alert('Failed to get upload token. Please try again.');
-    progressContainer.style.display = 'none';
-    return;
-  }
-
-  // 2. Prepare video upload, including title, description, and category
-  const videoFile = formData.get('video');
-  const mediaForm = new FormData();
-  mediaForm.append('file', videoFile, videoFile.name);
-  mediaForm.append('title', formData.get('title'));
-  mediaForm.append('description', formData.get('description'));
-  mediaForm.append('category', formData.get('category'));
-
-  // 3. Upload to MediaCMS with progress
   const xhr = new XMLHttpRequest();
-  xhr.open('POST', 'https://mediacms-cw-u46015.vm.elestio.app/api/v1/media/upload/');
-  xhr.setRequestHeader('Authorization', 'Bearer ' + token);
+  xhr.open('POST', API_BASE + '/upload'); // Send to YOUR BACKEND, not MediaCMS!
 
   xhr.upload.addEventListener('progress', event => {
     if (event.lengthComputable) {
@@ -120,6 +97,7 @@ document.getElementById('uploadForm').addEventListener('submit', async function(
     progressBar.style.width = '0%';
   };
 
-  xhr.send(mediaForm);
+  xhr.send(formData); // Send your original formData (browser handles multipart)
 });
+
 </script>
