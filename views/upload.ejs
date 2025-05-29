@@ -52,46 +52,74 @@
   </form>
 
   <script>
-    // Optional: change this to your backend upload endpoint if needed
-    const API_BASE = 'https://snapbackend-new.onrender.com';
+const API_BASE = 'https://snapbackend-new.onrender.com';
 
-    window.addEventListener('DOMContentLoaded', () => {
-      setTimeout(() => document.getElementById('video').click(), 500);
-    });
+window.addEventListener('DOMContentLoaded', () => {
+  setTimeout(() => document.getElementById('video').click(), 500);
+});
 
-    document.getElementById('video').addEventListener('change', () => {
-      document.getElementById('plusLabel').style.color = '#0af';
-      document.getElementById('plusLabel').style.borderColor = '#0af';
-    });
+document.getElementById('video').addEventListener('change', () => {
+  document.getElementById('plusLabel').style.color = '#0af';
+  document.getElementById('plusLabel').style.borderColor = '#0af';
+});
 
-    document.getElementById('uploadForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-      const formData = new FormData(this);
-      const xhr = new XMLHttpRequest();
-      const progressBar = document.getElementById('progressBar');
-      const progressContainer = document.getElementById('progressContainer');
-      progressContainer.style.display = 'block';
+document.getElementById('uploadForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const formData = new FormData(this);
+  const progressBar = document.getElementById('progressBar');
+  const progressContainer = document.getElementById('progressContainer');
+  progressContainer.style.display = 'block';
 
-      xhr.upload.addEventListener('progress', event => {
-        if (event.lengthComputable) {
-          const percent = (event.loaded / event.total) * 100;
-          progressBar.style.width = percent + '%';
-        }
-      });
+  // 1. Get token from your backend
+  let token = '';
+  try {
+    const tokenRes = await fetch(API_BASE + '/api/mediacms-token', { method: 'POST' });
+    const tokenData = await tokenRes.json();
+    if (!tokenData.token) throw new Error('Failed to get token');
+    token = tokenData.token;
+  } catch (err) {
+    alert('Failed to get upload token. Please try again.');
+    progressContainer.style.display = 'none';
+    return;
+  }
 
-      xhr.open('POST', API_BASE + '/upload');
+  // 2. Prepare video upload, including title, description, and category
+  const videoFile = formData.get('video');
+  const mediaForm = new FormData();
+  mediaForm.append('file', videoFile, videoFile.name);
+  mediaForm.append('title', formData.get('title'));
+  mediaForm.append('description', formData.get('description'));
+  mediaForm.append('category', formData.get('category'));
 
-      xhr.onload = () => {
-        if (xhr.status >= 200 && xhr.status < 300) {
-          window.location.href = API_BASE + '/feed';
-        } else {
-          alert('Upload failed: ' + xhr.responseText);
-        }
-      };
+  // 3. Upload to MediaCMS with progress
+  const xhr = new XMLHttpRequest();
+  xhr.open('POST', 'https://mediacms-cw-u46015.vm.elestio.app/api/v1/media/upload/');
+  xhr.setRequestHeader('Authorization', 'Bearer ' + token);
 
-      xhr.onerror = () => alert('Network error during upload');
-      xhr.send(formData);
-    });
-  </script>
-</body>
-</html>
+  xhr.upload.addEventListener('progress', event => {
+    if (event.lengthComputable) {
+      const percent = (event.loaded / event.total) * 100;
+      progressBar.style.width = percent + '%';
+    }
+  });
+
+  xhr.onload = () => {
+    if (xhr.status >= 200 && xhr.status < 300) {
+      alert('Upload successful! Your video is pending admin approval.');
+      window.location.href = API_BASE + '/feed';
+    } else {
+      alert('Upload failed: ' + xhr.responseText);
+      progressContainer.style.display = 'none';
+      progressBar.style.width = '0%';
+    }
+  };
+
+  xhr.onerror = () => {
+    alert('Network error during upload');
+    progressContainer.style.display = 'none';
+    progressBar.style.width = '0%';
+  };
+
+  xhr.send(mediaForm);
+});
+</script>
