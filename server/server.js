@@ -22,6 +22,7 @@ app.use(cors({
     'https://snap-news.onrender.com',
     'https://snapbackend-new.onrender.com',
     'http://localhost:3000'
+    'http://www.snapshnap.com'
   ],
   credentials: true
 }));
