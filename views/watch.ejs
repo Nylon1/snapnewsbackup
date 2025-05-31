@@ -1,41 +1,34 @@
 <!DOCTYPE html>
-<html lang="en">
 <head>
-<!-- Essential Meta Tags -->
-<title><%= video.title %> | SnapShnap</title>
-<meta name="description" content="<%= video.description || 'Watch and share news instantly on SnapShnap.' %>">
+  <title><%= video && video.title ? video.title : 'SnapShnap Video' %> | SnapShnap</title>
+  <meta name="description" content="<%= video && video.description ? video.description : 'Watch and share news instantly on SnapShnap.' %>">
 
-<!-- Open Graph / Facebook -->
-<meta property="og:type" content="video.other" />
-<meta property="og:url" content="https://www.snapshnap.com/watch/<%= video.friendly_token %>" />
-<meta property="og:title" content="<%= video.title %>" />
-<meta property="og:description" content="<%= video.description || 'Watch and share news instantly on SnapShnap.' %>" />
-<meta property="og:image" content="<%= video.thumbnail_url && video.thumbnail_url.startsWith('http') ? video.thumbnail_url : ('https://mediacms-cw-u46015.vm.elestio.app' + video.thumbnail_url) %>" />
-<meta property="og:image:alt" content="<%= video.title %>" />
-<meta property="og:video" content="<%= videoUrl %>" />
-<meta property="og:video:type" content="video/mp4" />
-<meta property="og:video:width" content="640" />
-<meta property="og:video:height" content="360" />
+  <!-- OG -->
+  <meta property="og:type" content="video.other" />
+  <meta property="og:url" content="https://www.snapshnap.com/watch/<%= video && video.friendly_token ? video.friendly_token : '' %>" />
+  <meta property="og:title" content="<%= video && video.title ? video.title : 'SnapShnap Video' %>" />
+  <meta property="og:description" content="<%= video && video.description ? video.description : 'Watch and share news instantly on SnapShnap.' %>" />
+  <meta property="og:image" content="<%= (video && video.thumbnail_url && video.thumbnail_url.startsWith('http')) ? video.thumbnail_url : (video && video.thumbnail_url ? 'https://mediacms-cw-u46015.vm.elestio.app' + video.thumbnail_url : '/default-thumb.jpg') %>" />
+  <meta property="og:image:alt" content="<%= video && video.title ? video.title : 'SnapShnap Video' %>" />
+  <meta property="og:video" content="<%= videoUrl ? videoUrl : '' %>" />
+  <meta property="og:video:type" content="video/mp4" />
+  <meta property="og:video:width" content="640" />
+  <meta property="og:video:height" content="360" />
 
-<!-- Twitter Card -->
-<meta name="twitter:card" content="player" />
-<meta name="twitter:url" content="https://www.snapshnap.com/watch/<%= video.friendly_token %>" />
-<meta name="twitter:title" content="<%= video.title %>" />
-<meta name="twitter:description" content="<%= video.description || 'Watch and share news instantly on SnapShnap.' %>" />
-<meta name="twitter:image" content="<%= video.thumbnail_url && video.thumbnail_url.startsWith('http') ? video.thumbnail_url : ('https://mediacms-cw-u46015.vm.elestio.app' + video.thumbnail_url) %>" />
-<meta name="twitter:player" content="<%= videoUrl %>" />
-<meta name="twitter:player:width" content="640" />
-<meta name="twitter:player:height" content="360" />
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="player" />
+  <meta name="twitter:url" content="https://www.snapshnap.com/watch/<%= video && video.friendly_token ? video.friendly_token : '' %>" />
+  <meta name="twitter:title" content="<%= video && video.title ? video.title : 'SnapShnap Video' %>" />
+  <meta name="twitter:description" content="<%= video && video.description ? video.description : 'Watch and share news instantly on SnapShnap.' %>" />
+  <meta name="twitter:image" content="<%= (video && video.thumbnail_url && video.thumbnail_url.startsWith('http')) ? video.thumbnail_url : (video && video.thumbnail_url ? 'https://mediacms-cw-u46015.vm.elestio.app' + video.thumbnail_url : '/default-thumb.jpg') %>" />
+  <meta name="twitter:player" content="<%= videoUrl ? videoUrl : '' %>" />
+  <meta name="twitter:player:width" content="640" />
+  <meta name="twitter:player:height" content="360" />
 
-<!-- WhatsApp & iMessage use the same OG tags above -->
-
-<!-- Fallback for legacy -->
-<link rel="image_src" href="<%= video.thumbnail_url && video.thumbnail_url.startsWith('http') ? video.thumbnail_url : ('https://mediacms-cw-u46015.vm.elestio.app' + video.thumbnail_url) %>" />
-
- 
-  <title><%= video.title %> | SnapShnap</title>
-  <!-- ...meta tags unchanged... -->
  <script src="https://cdn.tailwindcss.com"></script>
+
+</head>
+
   <style>
     @keyframes glow {
       0%, 100% { opacity: 0.72; filter: blur(16px);}
