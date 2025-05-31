@@ -17,7 +17,7 @@
           : MEDIA_BASE + video.thumbnail_url;
       }
 
-      // Compute og:video from video.file (or fallback to video.videoUrl if set)
+      // Compute og:video from video.file (or fallback to video.videoUrl)
       let ogVideo = '';
       if (video.file) {
         ogVideo = video.file.startsWith('http') 
@@ -31,19 +31,20 @@
 
     <!-- Open Graph tags -->
     <meta property="og:type"        content="video.other" />
-    <meta property="og:url"         content="https://www.snapshsnap.com/watch/<%= video.id %>" />
+    <meta property="og:url"         content="https://snapshsnap.com/watch/<%= video.id %>" />
     <meta property="og:title"       content="<%= video.title %>" />
     <meta property="og:description" content="<%= video.description || 'Watch and share news on SnapShnap.' %>" />
     <meta property="og:image"       content="<%= ogImage %>" />
-    <meta property="og:video"       content="<%= ogVideo %>" />
-    <meta property="og:video:type"  content="video/mp4" />
-    <meta property="og:video:width" content="640" />
-    <meta property="og:video:height"content="360" />
+    <meta property="og:video"            content="<%= ogVideo %>" />
+    <meta property="og:video:secure_url" content="<%= ogVideo %>" />
+    <meta property="og:video:type"       content="video/mp4" />
+    <meta property="og:video:width"      content="640" />
+    <meta property="og:video:height"     content="360" />
 
     <!-- Twitter Card tags (optional) -->
     <meta name="twitter:card"        content="player" />
     <meta name="twitter:title"       content="<%= video.title %>" />
-    <meta name="twitter:description" content="<%= video.description || 'Watch and share news on SnapShnap.' %>" />
+    <meta name="twitter:description" content="<%= video.description || 'Watch and share news on SnapShsnap.' %>" />
     <meta name="twitter:image"       content="<%= ogImage %>" />
     <meta name="twitter:player"      content="<%= ogVideo %>" />
     <meta name="twitter:player:width"  content="640" />
@@ -55,7 +56,6 @@
         50%      { opacity: 1;    filter: blur(32px); }
       }
       .animate-glow { animation: glow 2.8s infinite alternate cubic-bezier(.4,2.2,.3,1); }
-
       @keyframes cardpop {
         0%   { transform: scale(1); }
         50%  { transform: scale(1.025); }
@@ -66,48 +66,57 @@
   </head>
 
   <body class="bg-black text-white min-h-screen flex flex-col items-center justify-center">
+
     <% 
-      // Determine which video source to use in the <video> tag
-      const vidSrc = video.videoUrl || ogVideo || '';
-      const thumb = video.thumbnail_url 
-        ? (video.thumbnail_url.startsWith('http') 
-            ? video.thumbnail_url 
-            : MEDIA_BASE + video.thumbnail_url)
-        : '';
+      // Force the <video> tag to use the same MP4 link from ogVideo
+      const vidSrc = ogVideo;
+
+      // Compute the poster thumbnail URL exactly as above
+      const thumbSrc = video.thumbnail_url && video.thumbnail_url.startsWith('http')
+        ? video.thumbnail_url
+        : (video.thumbnail_url ? MEDIA_BASE + video.thumbnail_url : '');
     %>
 
     <div class="w-full max-w-xl bg-gray-900 rounded-lg shadow-lg p-8 mt-10">
+      <!-- Video Player -->
       <div class="mb-5">
-        <video class="w-full rounded shadow-lg"
-               controls
-               autoplay
-               poster="<%= thumb %>">
-          <% if (vidSrc) { %>
-            <source src="<%= vidSrc %>" type="video/mp4" />
-          <% } %>
+        <video 
+          class="w-full rounded shadow-lg"
+          controls
+          autoplay
+          poster="<%= thumbSrc %>">
+          <source src="<%= vidSrc %>" type="video/mp4" />
           Sorry, your browser doesn’t support embedded videos.
         </video>
       </div>
 
+      <!-- Title and Upload Info -->
       <h2 class="text-xl font-bold text-yellow-400 mb-1"><%= video.title %></h2>
       <div class="text-gray-300 text-sm mb-4">
         Uploaded by 
-        <span class="font-semibold"><%= video.user.username %></span>
-        &middot; <%= video.created_at ? video.created_at.toLocaleString() : '' %>
+        <span class="font-semibold"><%= video.user?.username || 'Unknown' %></span>
+        &middot; 
+        <%= video.created_at ? new Date(video.created_at).toLocaleString() : '' %>
       </div>
 
+      <!-- Description -->
       <% if (video.description) { %>
         <div class="mb-4 text-gray-200"><%= video.description %></div>
       <% } %>
 
+      <!-- Hashtag -->
       <div class="text-xs text-yellow-400 mb-4">#snapnews</div>
+
+      <!-- Back to Feed Link -->
       <a href="/feed"
          class="bg-yellow-400 text-black px-4 py-2 rounded font-semibold hover:bg-yellow-300 transition">
         ← Back to Feed
       </a>
     </div>
+
   </body>
 </html>
+
 
 
 
