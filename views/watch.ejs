@@ -6,7 +6,7 @@
     <title><%= video.title %> | SnapShnap</title>
 
     <% 
-      // Base URL for relative paths
+      // Base URL for relative media paths
       const MEDIA_BASE_URL = 'https://mediacms-cw-u46015.vm.elestio.app';
 
       // === Compute og:image safely ===
@@ -21,24 +21,23 @@
 
       // === Compute og:video safely ===
       let ogVideoUrl = '';
+      // If your JSON returns a “file” field:
       if (video.file) {
         if (video.file.startsWith('http')) {
           ogVideoUrl = video.file;
         } else {
           ogVideoUrl = MEDIA_BASE_URL + video.file;
         }
-      } else {
-        // If you expected an 'encodings_info' field instead of video.file, you could fallback to that here.
-        // For example, you might have computed video.videoUrl in the route and simply use:
-        //    ogVideoUrl = video.videoUrl || '';
       }
+      // Alternatively, if you built `video.videoUrl` in your route from encodings_info,
+      // you could replace the above with `let ogVideoUrl = video.videoUrl || '';`
     %>
 
     <!-- Open Graph tags -->
     <meta property="og:type"        content="video.other" />
     <meta property="og:url"         content="https://www.snapshnap.com/watch/<%= video.id %>" />
     <meta property="og:title"       content="<%= video.title %>" />
-    <meta property="og:description" content="<%= video.description || 'Watch and share news on SnapShnap.' %>" />
+    <meta property="og:description" content="<%= video.description || 'Watch and share news instantly on SnapShnap.' %>" />
     <meta property="og:image"       content="<%= ogImage %>" />
     <meta property="og:video"       content="<%= ogVideoUrl %>" />
     <meta property="og:video:type"  content="video/mp4" />
@@ -48,7 +47,7 @@
     <!-- Twitter Card tags -->
     <meta name="twitter:card"        content="player" />
     <meta name="twitter:title"       content="<%= video.title %>" />
-    <meta name="twitter:description" content="<%= video.description || 'Watch and share news on SnapShnap.' %>" />
+    <meta name="twitter:description" content="<%= video.description || 'Watch and share news instantly on SnapShnap.' %>" />
     <meta name="twitter:image"       content="<%= ogImage %>" />
     <meta name="twitter:player"      content="<%= ogVideoUrl %>" />
     <meta name="twitter:player:width"  content="640" />
@@ -75,13 +74,13 @@
 
   <body class="bg-black text-white min-h-screen flex flex-col items-center justify-center">
     <% 
-      // If you want to choose the "best" encoded video quality from encodings_info,
-      // you could compute 'video.videoUrl' in your route. For now, if ogVideoUrl is empty,
-      // we simply won't show a playable <video> tag below, or we fallback to 'videoUrl':
+      // If you computed `video.videoUrl` in your route, use it; otherwise fallback to ogVideoUrl
       const vidSrc = video.videoUrl || ogVideoUrl;
-      const thumb = video.thumbnail_url && video.thumbnail_url.startsWith('http')
-        ? video.thumbnail_url
-        : video.thumbnail_url ? MEDIA_BASE_URL + video.thumbnail_url : '';
+      const thumb = video.thumbnail_url
+        ? (video.thumbnail_url.startsWith('http')
+            ? video.thumbnail_url
+            : MEDIA_BASE_URL + video.thumbnail_url)
+        : '';
     %>
 
     <div class="w-full max-w-xl bg-gray-900 rounded-lg shadow-lg p-8 mt-10">
@@ -101,7 +100,7 @@
       <div class="text-gray-300 text-sm mb-4">
         Uploaded by 
         <span class="font-semibold"><%= video.user?.username %></span>
-        &middot; <%= video.created_at ? video.created_at.toLocaleString() : '' %>
+        &middot; <%= video.created_at ? new Date(video.created_at).toLocaleString() : '' %>
       </div>
 
       <% if (video.description) { %>
@@ -115,6 +114,8 @@
       </a>
     </div>
   </body>
+</html>
+
 </html>
 
 
