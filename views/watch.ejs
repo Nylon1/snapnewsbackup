@@ -32,10 +32,10 @@
 <!-- Fallback for legacy -->
 <link rel="image_src" href="<%= video.thumbnail_url && video.thumbnail_url.startsWith('http') ? video.thumbnail_url : ('https://mediacms-cw-u46015.vm.elestio.app' + video.thumbnail_url) %>" />
 
-  <script src="https://cdn.tailwindcss.com"></script>
+ 
   <title><%= video.title %> | SnapShnap</title>
   <!-- ...meta tags unchanged... -->
-
+ <script src="https://cdn.tailwindcss.com"></script>
   <style>
     @keyframes glow {
       0%, 100% { opacity: 0.72; filter: blur(16px);}
