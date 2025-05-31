@@ -50,40 +50,51 @@
 <body class="bg-black text-white min-h-screen flex flex-col items-center justify-center">
 
 <%
-  // (Your video selection JS as before)
+  // Robust video selection
+  let videoUrl = null;
+  let encodings = video.encodings_info || {};
+  let order = ["720", "480", "360", "240"];
+  for (let q of order) {
+    if (encodings[q] && encodings[q].h264 && encodings[q].h264.url) {
+      videoUrl = encodings[q].h264.url.startsWith('http')
+        ? encodings[q].h264.url
+        : 'https://mediacms-cw-u46015.vm.elestio.app' + encodings[q].h264.url;
+      break;
+    }
+  }
+  // fallback: original file
+  if (!videoUrl && video.original_media_url) {
+    videoUrl = video.original_media_url.startsWith('http')
+      ? video.original_media_url
+      : 'https://mediacms-cw-u46015.vm.elestio.app' + video.original_media_url;
+  }
+  // Thumbnail
+  let thumbUrl = video.thumbnail_url
+    ? (video.thumbnail_url.startsWith('http')
+        ? video.thumbnail_url
+        : 'https://mediacms-cw-u46015.vm.elestio.app' + video.thumbnail_url)
+    : '';
 %>
 
-<div class="flex min-h-screen items-center justify-center bg-black">
-  <div class="relative bg-[#191e2c] p-7 rounded-3xl max-w-lg w-full shadow-2xl flex flex-col items-center 
-              animate-glow-card border-2 border-yellow-400 group transition-all duration-300 overflow-hidden">
-
-    <!-- Animated Glowing Ring -->
-    <div class="absolute -inset-2 rounded-3xl z-0 blur-xl opacity-80
-                bg-gradient-to-br from-yellow-400/80 via-yellow-400/20 to-yellow-500/90
-                animate-glow"></div>
-
-    <!-- Video -->
-    <video
-      class="relative z-10 rounded-2xl shadow-lg border-2 border-yellow-300 group-hover:scale-105 transition-all duration-200"
-      src="<%= videoUrl %>" controls autoplay poster="<%= thumbUrl %>">
-      Sorry, your browser doesn't support embedded videos.
-    </video>
-
-    <!-- Content -->
-    <div class="relative z-10 w-full mt-5 flex flex-col items-center">
-      <h2 class="text-xl font-bold text-yellow-400 mb-1 text-center drop-shadow"><%= video.title || 'Untitled Snap' %></h2>
-      <div class="text-gray-300 text-sm mb-2 text-center">
-        Uploaded by <span class="font-semibold"><%= video.user?.username || video.user || 'Anonymous' %></span>
-        · <%= new Date(video.created_at).toLocaleString() %>
-      </div>
-      <% if (video.description) { %>
-        <div class="mb-3 text-gray-200 text-center"><%= video.description %></div>
-      <% } %>
-      <div class="text-xs text-yellow-400 mb-4">#snapnews</div>
-      <a href="/feed" class="bg-yellow-400 text-black px-4 py-2 rounded font-semibold hover:bg-yellow-300 transition">← Back to Feed</a>
+  <div class="w-full max-w-xl bg-gray-900 rounded-lg shadow-lg p-8 mt-10">
+    <div class="mb-5">
+      <video class="w-full rounded shadow-lg" controls autoplay poster="<%= thumbUrl %>">
+        <source src="<%= videoUrl %>" type="video/mp4">
+        Sorry, your browser doesn't support embedded videos.
+      </video>
     </div>
+    <h2 class="text-xl font-bold text-yellow-400 mb-1"><%= video.title || 'Untitled Snap' %></h2>
+    <div class="text-gray-300 text-sm mb-4">
+      Uploaded by <span class="font-semibold"><%= video.user?.username || video.user || 'Anonymous' %></span>
+      · <%= new Date(video.created_at).toLocaleString() %>
+    </div>
+    <% if (video.description) { %>
+      <div class="mb-4 text-gray-200"><%= video.description %></div>
+    <% } %>
+    <div class="text-xs text-yellow-400 mb-4">#snapnews</div>
+    <a href="/feed" class="bg-yellow-400 text-black px-4 py-2 rounded font-semibold hover:bg-yellow-300 transition">← Back to Feed</a>
   </div>
-</div>
 </body>
 </html>
+
 
