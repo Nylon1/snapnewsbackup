@@ -273,7 +273,8 @@
             </div>
           <% } %>
           <div class="card-actions">
-            <button class="share-btn" data-url="<%= videoPageUrl %>" data-idx="<%= idx %>">
+            <button class="share-btn" data-path="/watch/<%= video.friendly_token %>" data-idx="<%= idx %>">
+
               <svg fill="#191e2c" viewBox="0 0 24 24"><path d="M18 8a3 3 0 1 0-2.83-2H9.83A3 3 0 1 0 9 8h6zm-9 8a3 3 0 1 0 2.83 2h5.34A3 3 0 1 0 15 16H9zm1-7v2h4V9z"/></svg>
               Share
             </button>
