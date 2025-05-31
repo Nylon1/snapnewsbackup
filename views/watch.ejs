@@ -6,7 +6,7 @@
     <title><%= video.title %> | SnapShnap</title>
 
     <% 
-      // Base URL for relative media paths
+      // Base URL for any relative media paths
       const MEDIA_BASE_URL = 'https://mediacms-cw-u46015.vm.elestio.app';
 
       // === Compute og:image safely ===
@@ -21,16 +21,16 @@
 
       // === Compute og:video safely ===
       let ogVideoUrl = '';
-      // If your JSON returns a “file” field:
+      // If your API returns `video.file` (absolute or relative):
       if (video.file) {
-        if (video.file.startsWith('http')) {
-          ogVideoUrl = video.file;
-        } else {
-          ogVideoUrl = MEDIA_BASE_URL + video.file;
-        }
+        ogVideoUrl = video.file.startsWith('http')
+          ? video.file
+          : MEDIA_BASE_URL + video.file;
       }
-      // Alternatively, if you built `video.videoUrl` in your route from encodings_info,
-      // you could replace the above with `let ogVideoUrl = video.videoUrl || '';`
+      // Alternatively, if you populated `video.videoUrl` from encodings_info in your route:
+      if (!ogVideoUrl && video.videoUrl) {
+        ogVideoUrl = video.videoUrl;
+      }
     %>
 
     <!-- Open Graph tags -->
@@ -74,8 +74,9 @@
 
   <body class="bg-black text-white min-h-screen flex flex-col items-center justify-center">
     <% 
-      // If you computed `video.videoUrl` in your route, use it; otherwise fallback to ogVideoUrl
-      const vidSrc = video.videoUrl || ogVideoUrl;
+      // Determine which video source to use for the <video> tag:
+      const vidSrc = video.videoUrl || ogVideoUrl || '';
+      // Determine thumbnail for the <video> poster:
       const thumb = video.thumbnail_url
         ? (video.thumbnail_url.startsWith('http')
             ? video.thumbnail_url
@@ -84,6 +85,7 @@
     %>
 
     <div class="w-full max-w-xl bg-gray-900 rounded-lg shadow-lg p-8 mt-10">
+
       <div class="mb-5">
         <video class="w-full rounded shadow-lg"
                controls
@@ -116,7 +118,6 @@
   </body>
 </html>
 
-</html>
 
 
 
