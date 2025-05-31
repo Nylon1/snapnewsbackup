@@ -67,6 +67,10 @@
 
   <body class="bg-black text-white min-h-screen flex flex-col items-center justify-center">
 
+<pre style="background:#222;color:#0f0;padding:10px;">
+<%= JSON.stringify(video, null, 2) %>
+</pre>
+
     <% 
       // Force the <video> tag to use the same MP4 link from ogVideo
       const vidSrc = ogVideo;
@@ -115,6 +119,8 @@
     </div>
 
   </body>
+
+
 </html>
 
 
