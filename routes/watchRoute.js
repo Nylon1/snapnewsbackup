@@ -14,7 +14,8 @@ router.get('/watch/:id', async (req, res) => {
       return res.status(404).render('404', { message: 'Snap not found' });
     }
     const video = await response.json();
-    console.log("📦 FETCHED VIDEO OBJECT:", video);
+    console.log('>>> About to render watch.ejs with video =', video);
+
 
     res.render('watch', { video });
   } catch (error) {
