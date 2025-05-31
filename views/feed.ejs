@@ -312,18 +312,19 @@
     setInterval(updateTimers, 1000);
     updateTimers();
 
-    // Share button
-    document.querySelectorAll('.share-btn').forEach(function(btn) {
-      btn.addEventListener('click', function() {
-        var url = btn.getAttribute('data-url');
-        navigator.clipboard.writeText(url).then(function() {
-          var idx = btn.getAttribute('data-idx');
-          var msg = document.getElementById('copied-' + idx);
-          msg.style.opacity = 1;
-          setTimeout(function() { msg.style.opacity = 0; }, 1800);
-        });
-      });
+ // Share button
+document.querySelectorAll('.share-btn').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    var url = window.location.origin + btn.getAttribute('data-path');
+    navigator.clipboard.writeText(url).then(function() {
+      var idx = btn.getAttribute('data-idx');
+      var msg = document.getElementById('copied-' + idx);
+      msg.style.opacity = 1;
+      setTimeout(function() { msg.style.opacity = 0; }, 1800);
     });
+  });
+});
+
   </script>
 </body>
 </html>
