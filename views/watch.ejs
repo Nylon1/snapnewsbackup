@@ -5,32 +5,28 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <title><%= video.title %> | SnapShnap</title>
 
-  <% 
-  // Pick the 720p encoding (or whichever is highest available)
-  const enc720 = video.encodings_info?.["720"]?.h264?.url || "";
-  const vidSrc = enc720.startsWith('http')
-    ? enc720
-    : ('https://mediacms-cw-u46015.vm.elestio.app' + enc720);
+    <% 
+      // Base URL for any relative media paths
+      const MEDIA_BASE = 'https://mediacms-cw-u46015.vm.elestio.app';
 
-  // Build the poster thumbnail URL
-  const thumbSrc = video.thumbnail_url.startsWith('http')
-    ? video.thumbnail_url
-    : ('https://mediacms-cw-u46015.vm.elestio.app' + video.thumbnail_url);
-%>
+      // Pick the 720p encoding (highest quality available)
+      // video.encodings_info["720"].h264.url is a relative path like "/media/encoded/...720.mp4.mp4"
+      const enc720 = video.encodings_info?.["720"]?.h264?.url || "";
 
-<video
-  class="w-full rounded shadow-lg"
-  controls
-  autoplay
-  poster="<%= thumbSrc %>">
-  <source src="<%= vidSrc %>" type="video/mp4" />
-  Sorry, your browser doesn’t support embedded videos.
-</video>
+      // Build the full HTTPS MP4 link
+      const ogVideo = enc720.startsWith('http')
+        ? enc720
+        : MEDIA_BASE + enc720;
 
+      // Build the full thumbnail/ poster URL
+      const ogImage = video.thumbnail_url.startsWith('http')
+        ? video.thumbnail_url
+        : MEDIA_BASE + video.thumbnail_url;
+    %>
 
     <!-- Open Graph tags -->
     <meta property="og:type"        content="video.other" />
-    <meta property="og:url"         content="https://snapshsnap.com/watch/<%= video.id %>" />
+    <meta property="og:url"         content="https://snapshsnap.com/watch/<%= video.friendly_token %>" />
     <meta property="og:title"       content="<%= video.title %>" />
     <meta property="og:description" content="<%= video.description || 'Watch and share news on SnapShnap.' %>" />
     <meta property="og:image"       content="<%= ogImage %>" />
@@ -66,20 +62,6 @@
 
   <body class="bg-black text-white min-h-screen flex flex-col items-center justify-center">
 
-<pre style="background:#222;color:#0f0;padding:10px;">
-<%= JSON.stringify(video, null, 2) %>
-</pre>
-
-    <% 
-      // Force the <video> tag to use the same MP4 link from ogVideo
-      const vidSrc = ogVideo;
-
-      // Compute the poster thumbnail URL exactly as above
-      const thumbSrc = video.thumbnail_url && video.thumbnail_url.startsWith('http')
-        ? video.thumbnail_url
-        : (video.thumbnail_url ? MEDIA_BASE + video.thumbnail_url : '');
-    %>
-
     <div class="w-full max-w-xl bg-gray-900 rounded-lg shadow-lg p-8 mt-10">
       <!-- Video Player -->
       <div class="mb-5">
@@ -87,8 +69,8 @@
           class="w-full rounded shadow-lg"
           controls
           autoplay
-          poster="<%= thumbSrc %>">
-          <source src="<%= vidSrc %>" type="video/mp4" />
+          poster="<%= ogImage %>">
+          <source src="<%= ogVideo %>" type="video/mp4" />
           Sorry, your browser doesn’t support embedded videos.
         </video>
       </div>
@@ -97,9 +79,9 @@
       <h2 class="text-xl font-bold text-yellow-400 mb-1"><%= video.title %></h2>
       <div class="text-gray-300 text-sm mb-4">
         Uploaded by 
-        <span class="font-semibold"><%= video.user?.username || 'Unknown' %></span>
+        <span class="font-semibold"><%= video.user.username %></span>
         &middot; 
-        <%= video.created_at ? new Date(video.created_at).toLocaleString() : '' %>
+        <%= video.add_date ? new Date(video.add_date).toLocaleString() : '' %>
       </div>
 
       <!-- Description -->
@@ -118,12 +100,7 @@
     </div>
 
   </body>
-
-
 </html>
-
-
-
 
 
 
