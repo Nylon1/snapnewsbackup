@@ -7,49 +7,45 @@
 
     <% 
       // Base URL for any relative media paths
-      const MEDIA_BASE_URL = 'https://mediacms-cw-u46015.vm.elestio.app';
+      const MEDIA_BASE = 'https://mediacms-cw-u46015.vm.elestio.app';
 
-      // === Compute og:image safely ===
+      // Compute og:image from video.thumbnail_url
       let ogImage = '';
       if (video.thumbnail_url) {
-        if (video.thumbnail_url.startsWith('http')) {
-          ogImage = video.thumbnail_url;
-        } else {
-          ogImage = MEDIA_BASE_URL + video.thumbnail_url;
-        }
+        ogImage = video.thumbnail_url.startsWith('http') 
+          ? video.thumbnail_url 
+          : MEDIA_BASE + video.thumbnail_url;
       }
 
-      // === Compute og:video safely ===
-      let ogVideoUrl = '';
-      // If your API returns `video.file` (absolute or relative):
+      // Compute og:video from video.file (or fallback to video.videoUrl if set)
+      let ogVideo = '';
       if (video.file) {
-        ogVideoUrl = video.file.startsWith('http')
-          ? video.file
-          : MEDIA_BASE_URL + video.file;
+        ogVideo = video.file.startsWith('http') 
+          ? video.file 
+          : MEDIA_BASE + video.file;
       }
-      // Alternatively, if you populated `video.videoUrl` from encodings_info in your route:
-      if (!ogVideoUrl && video.videoUrl) {
-        ogVideoUrl = video.videoUrl;
+      if (!ogVideo && video.videoUrl) {
+        ogVideo = video.videoUrl;
       }
     %>
 
     <!-- Open Graph tags -->
     <meta property="og:type"        content="video.other" />
-    <meta property="og:url"         content="https://www.snapshnap.com/watch/<%= video.id %>" />
+    <meta property="og:url"         content="https://www.snapshsnap.com/watch/<%= video.id %>" />
     <meta property="og:title"       content="<%= video.title %>" />
-    <meta property="og:description" content="<%= video.description || 'Watch and share news instantly on SnapShnap.' %>" />
+    <meta property="og:description" content="<%= video.description || 'Watch and share news on SnapShnap.' %>" />
     <meta property="og:image"       content="<%= ogImage %>" />
-    <meta property="og:video"       content="<%= ogVideoUrl %>" />
+    <meta property="og:video"       content="<%= ogVideo %>" />
     <meta property="og:video:type"  content="video/mp4" />
     <meta property="og:video:width" content="640" />
     <meta property="og:video:height"content="360" />
 
-    <!-- Twitter Card tags -->
+    <!-- Twitter Card tags (optional) -->
     <meta name="twitter:card"        content="player" />
     <meta name="twitter:title"       content="<%= video.title %>" />
-    <meta name="twitter:description" content="<%= video.description || 'Watch and share news instantly on SnapShnap.' %>" />
+    <meta name="twitter:description" content="<%= video.description || 'Watch and share news on SnapShnap.' %>" />
     <meta name="twitter:image"       content="<%= ogImage %>" />
-    <meta name="twitter:player"      content="<%= ogVideoUrl %>" />
+    <meta name="twitter:player"      content="<%= ogVideo %>" />
     <meta name="twitter:player:width"  content="640" />
     <meta name="twitter:player:height" content="360" />
 
@@ -58,34 +54,29 @@
         0%, 100% { opacity: 0.72; filter: blur(16px); }
         50%      { opacity: 1;    filter: blur(32px); }
       }
-      .animate-glow {
-        animation: glow 2.8s infinite alternate cubic-bezier(.4,2.2,.3,1);
-      }
+      .animate-glow { animation: glow 2.8s infinite alternate cubic-bezier(.4,2.2,.3,1); }
+
       @keyframes cardpop {
         0%   { transform: scale(1); }
         50%  { transform: scale(1.025); }
         100% { transform: scale(1); }
       }
-      .animate-glow-card {
-        animation: cardpop 2.8s infinite alternate cubic-bezier(.4,2.2,.3,1);
-      }
+      .animate-glow-card { animation: cardpop 2.8s infinite alternate cubic-bezier(.4,2.2,.3,1); }
     </style>
   </head>
 
   <body class="bg-black text-white min-h-screen flex flex-col items-center justify-center">
     <% 
-      // Determine which video source to use for the <video> tag:
-      const vidSrc = video.videoUrl || ogVideoUrl || '';
-      // Determine thumbnail for the <video> poster:
-      const thumb = video.thumbnail_url
-        ? (video.thumbnail_url.startsWith('http')
-            ? video.thumbnail_url
-            : MEDIA_BASE_URL + video.thumbnail_url)
+      // Determine which video source to use in the <video> tag
+      const vidSrc = video.videoUrl || ogVideo || '';
+      const thumb = video.thumbnail_url 
+        ? (video.thumbnail_url.startsWith('http') 
+            ? video.thumbnail_url 
+            : MEDIA_BASE + video.thumbnail_url)
         : '';
     %>
 
     <div class="w-full max-w-xl bg-gray-900 rounded-lg shadow-lg p-8 mt-10">
-
       <div class="mb-5">
         <video class="w-full rounded shadow-lg"
                controls
@@ -101,8 +92,8 @@
       <h2 class="text-xl font-bold text-yellow-400 mb-1"><%= video.title %></h2>
       <div class="text-gray-300 text-sm mb-4">
         Uploaded by 
-        <span class="font-semibold"><%= video.user?.username %></span>
-        &middot; <%= video.created_at ? new Date(video.created_at).toLocaleString() : '' %>
+        <span class="font-semibold"><%= video.user.username %></span>
+        &middot; <%= video.created_at ? video.created_at.toLocaleString() : '' %>
       </div>
 
       <% if (video.description) { %>
@@ -117,6 +108,7 @@
     </div>
   </body>
 </html>
+
 
 
 
