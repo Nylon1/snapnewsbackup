@@ -5,29 +5,28 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <title><%= video.title %> | SnapShnap</title>
 
-    <% 
-      // Base URL for any relative media paths
-      const MEDIA_BASE = 'https://mediacms-cw-u46015.vm.elestio.app';
+  <% 
+  // Pick the 720p encoding (or whichever is highest available)
+  const enc720 = video.encodings_info?.["720"]?.h264?.url || "";
+  const vidSrc = enc720.startsWith('http')
+    ? enc720
+    : ('https://mediacms-cw-u46015.vm.elestio.app' + enc720);
 
-      // Compute og:image from video.thumbnail_url
-      let ogImage = '';
-      if (video.thumbnail_url) {
-        ogImage = video.thumbnail_url.startsWith('http') 
-          ? video.thumbnail_url 
-          : MEDIA_BASE + video.thumbnail_url;
-      }
+  // Build the poster thumbnail URL
+  const thumbSrc = video.thumbnail_url.startsWith('http')
+    ? video.thumbnail_url
+    : ('https://mediacms-cw-u46015.vm.elestio.app' + video.thumbnail_url);
+%>
 
-      // Compute og:video from video.file (or fallback to video.videoUrl)
-      let ogVideo = '';
-      if (video.file) {
-        ogVideo = video.file.startsWith('http') 
-          ? video.file 
-          : MEDIA_BASE + video.file;
-      }
-      if (!ogVideo && video.videoUrl) {
-        ogVideo = video.videoUrl;
-      }
-    %>
+<video
+  class="w-full rounded shadow-lg"
+  controls
+  autoplay
+  poster="<%= thumbSrc %>">
+  <source src="<%= vidSrc %>" type="video/mp4" />
+  Sorry, your browser doesn’t support embedded videos.
+</video>
+
 
     <!-- Open Graph tags -->
     <meta property="og:type"        content="video.other" />
