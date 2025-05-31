@@ -253,8 +253,9 @@
     <% } else { %>
       <% videos.forEach(function(video, idx) { %>
         <%
-          const snapnewsBase = "https://snap-news.onrender.com";
-          const videoPageUrl = snapnewsBase + "/watch/" + video.friendly_token;
+        const snapshnapBase = "https://snapshnap.com";
+const videoPageUrl = snapshnapBase + "/watch/" + video.friendly_token;
+
         %>
         <div class="video-card" data-date="<%= video.add_date %>" id="card-<%= idx %>">
           <div class="title"><%= video.title || "Untitled" %></div>
