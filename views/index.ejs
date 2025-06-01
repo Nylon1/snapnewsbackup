@@ -44,31 +44,36 @@
       z-index: -1;
     }
 
-    /* ─── GLOW FOR “Upload a Video” (YELLOW) ───────────────────────────────── */
-    .upload-btn {
-      box-shadow:
-        0 0 12px #FFD60066,   /* soft yellow glow */
-        0 0 24px #FFD60033;
-      transition: box-shadow 0.3s ease-in-out;
-    }
-    .upload-btn:hover {
-      box-shadow:
-        0 0 24px #FFD600,     /* brighter on hover */
-        0 0 48px #FFD60099;
-    }
+  /* ─── CONSTANT YELLOW GLOW FOR “Upload a Video” ─────────────────────────────── */
+.upload-btn {
+  /* a steady glow at all times */
+  box-shadow:
+    0 0 24px #FFD600,     /* main yellow glow */
+    0 0 48px #FFD60099;   /* softer outer glow */
+  transition: box-shadow 0.3s ease-in-out;
+}
+.upload-btn:hover {
+  /* you can keep a stronger glow on hover if you like, or simply omit this block */
+  box-shadow:
+    0 0 32px #FFD600,    /* even brighter on hover */
+    0 0 64px #FFD600aa;
+}
 
-    /* ─── GLOW FOR “Watch Snaps” (BLUE) ──────────────────────────────────────── */
-    .watch-btn {
-      box-shadow:
-        0 0 12px #00BFFF66,   /* soft blue glow */
-        0 0 24px #00BFFF33;
-      transition: box-shadow 0.3s ease-in-out;
-    }
-    .watch-btn:hover {
-      box-shadow:
-        0 0 24px #00BFFF,     /* brighter on hover */
-        0 0 48px #00BFFF99;
-    }
+/* ─── CONSTANT BLUE GLOW FOR “Watch Snaps” ──────────────────────────────────── */
+.watch-btn {
+  /* blue glow visible at all times */
+  box-shadow:
+    0 0 24px #00BFFF,     /* main blue glow */
+    0 0 48px #00BFFF99;   /* softer outer glow */
+  transition: box-shadow 0.3s ease-in-out;
+}
+.watch-btn:hover {
+  /* optional stronger glow on hover */
+  box-shadow:
+    0 0 32px #00BFFF,
+    0 0 64px #00BFFFaa;
+}
+
 
     /* ─── GLOW FOR Trending Now (YELLOW/ORANGE) ────────────────────────────── */
     .glow-trending {
