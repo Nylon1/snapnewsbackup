@@ -1,38 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Snapshnap</title>
+  <title>SnapShnap – Home</title>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- PWA Manifest -->
   <link rel="manifest" href="/manifest.json">
-
-  <!-- Favicon for browser tabs -->
   <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png">
   <link rel="icon" type="image/x-icon" href="/icons/youricon.ico">
-
-  <!-- Apple Touch Icon for iOS home screen -->
   <link rel="apple-touch-icon" href="/icons/icon-192.png">
-
-  <!-- Theme color for browser address bar (PWA) -->
   <meta name="theme-color" content="#FFD600">
-
-  <!-- Optional: PWA description -->
   <meta name="description" content="Snapshnap – Share and watch videos that vanish after 24 hours.">
 
-  <title>SnapShnap – Home</title>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-@keyframes bgGlow {
-  0% { filter: brightness(1) hue-rotate(0deg); }
-  100% { filter: brightness(1.15) hue-rotate(20deg); }
-}
-
     body { font-family: 'Segoe UI', sans-serif; }
-    /* Glow for Trending Now (yellow/orange) */
+    @keyframes bgGlow {
+      0% { filter: brightness(1) hue-rotate(0deg); }
+      100% { filter: brightness(1.15) hue-rotate(20deg); }
+    }
     .glow-trending {
       box-shadow: 0 0 24px 0 #ffbb0080, 0 2px 12px #0005;
       animation: glowTrending 2s infinite alternate;
@@ -42,7 +28,6 @@
       60% { box-shadow: 0 0 40px 0 #ffbb00cc, 0 2px 20px #ffbb0022, 0 2px 20px #0005; }
       100% { box-shadow: 0 0 16px 0 #ffbb00aa, 0 2px 12px #0005; }
     }
-    /* Glow for Snapper of the Week (pink) */
     .glow-snapper {
       box-shadow: 0 0 24px 0 #ff53b880, 0 2px 12px #0005;
       animation: glowSnapper 2.2s infinite alternate;
@@ -53,36 +38,50 @@
       100% { box-shadow: 0 0 16px 0 #ff53b8aa, 0 2px 12px #0005; }
     }
     @keyframes fadein { from { opacity: 0; transform: translateY(-10px);} to { opacity: 1; transform: none;}}
-    .animate-fadein { animation: fadein 0.18s;}
+    .animate-fadein { animation: fadein 0.18s; }
+    .drop-shadow-glow {
+      text-shadow: 0 0 8px #FFD600, 0 0 24px #FFD600, 0 0 32px #FFD600;
+    }
   </style>
 </head>
-<div class="fixed top-0 left-0 w-full h-full z-0 pointer-events-none" style="
-  background: radial-gradient(circle at center, #1f1f1f 0%, #000 100%);
-  background-size: cover;
-  animation: bgGlow 15s ease-in-out infinite alternate;">
-</div>
+<body class="bg-black text-white min-h-screen flex flex-col relative">
+  <div class="fixed top-0 left-0 w-full h-full z-0 pointer-events-none"
+       style="background: radial-gradient(circle at center, #1f1f1f 0%, #000 100%); background-size: cover; animation: bgGlow 15s ease-in-out infinite alternate;"></div>
 
-<body class="bg-black text-white min-h-screen flex flex-col">
+  <button onclick="toggleGlow()" class="fixed top-4 left-4 z-50 bg-[#232b3c] text-yellow-400 px-4 py-2 rounded-full text-sm hover:bg-yellow-600 hover:text-black transition">
+    Toggle Glow
+  </button>
 
-  <!-- User Icon Dropdown (top-right) -->
+  <audio id="bg-sound" loop autoplay muted>
+    <source src="/sounds/ambient-loop.mp3" type="audio/mpeg">
+  </audio>
+  <button onclick="toggleSound()" class="fixed top-4 right-4 z-50 bg-[#232b3c] text-yellow-400 px-4 py-2 rounded-full text-sm hover:bg-yellow-600 hover:text-black transition">
+    Toggle Sound
+  </button>
+  <script>
+    function toggleGlow() {
+      document.body.classList.toggle('bg-black');
+      document.body.classList.toggle('bg-[#0c0c0c]');
+    }
+    const sound = document.getElementById('bg-sound');
+    function toggleSound() {
+      sound.muted = !sound.muted;
+    }
+  </script>
+
   <div class="absolute top-6 right-8 z-50 group flex flex-col items-end">
     <button id="userMenuBtn" class="bg-[#232b3c] hover:bg-yellow-400/20 p-2 rounded-full shadow transition flex items-center focus:outline-none">
-      <!-- Simple User SVG -->
       <svg width="32" height="32" fill="none" viewBox="0 0 32 32">
         <circle cx="16" cy="12" r="7" fill="#aaa"/>
         <ellipse cx="16" cy="24" rx="10" ry="6" fill="#aaa"/>
       </svg>
     </button>
-    <!-- Dropdown Menu -->
-    <div id="userMenuDropdown"
-      class="hidden mt-2 w-36 bg-[#232b3c] text-white rounded-xl shadow-lg border border-gray-700 py-2 flex flex-col animate-fadein">
+    <div id="userMenuDropdown" class="hidden mt-2 w-36 bg-[#232b3c] text-white rounded-xl shadow-lg border border-gray-700 py-2 flex flex-col animate-fadein">
       <a href="/login" class="px-5 py-2 hover:bg-yellow-400/20 transition text-left">Snap In</a>
       <a href="/signup" class="px-5 py-2 hover:bg-yellow-400/20 transition text-left">Snap Up</a>
     </div>
   </div>
-
   <script>
-    // Toggle dropdown on click
     const btn = document.getElementById('userMenuBtn');
     const dropdown = document.getElementById('userMenuDropdown');
     document.addEventListener('click', (e) => {
@@ -94,29 +93,24 @@
     });
   </script>
 
-  <!-- HEADER -->
-  <header class="w-full py-8 flex flex-col items-center">
-    <span class="text-6xl mb-2" aria-label="Fire Logo" title="SnapShnap">🔥</span>
-    <h1 class="text-4xl sm:text-5xl font-extrabold text-yellow-400 mb-2">SnapShnap</h1>
+  <header class="w-full py-8 flex flex-col items-center z-10">
+    <span class="text-6xl mb-2 animate-pulse drop-shadow-glow">🔥</span>
+    <h1 class="text-4xl sm:text-5xl font-extrabold text-yellow-400 mb-2 drop-shadow-glow">SnapShnap</h1>
     <p class="text-gray-300 text-base sm:text-lg max-w-md text-center mb-4">
-      Share in 60 seconds. Self-destructs in 24 hours.News,Travel & Food.
+      Share in 60 seconds. Self-destructs in 24 hours. News, Travel & Food.
     </p>
     <div class="flex flex-col sm:flex-row justify-center items-center gap-4">
-      <a href="/upload"
-         class="bg-yellow-400 hover:bg-yellow-300 text-black font-bold px-6 py-3 rounded-full text-sm sm:text-base">
-         Upload a Video
+      <a href="/upload" class="relative overflow-hidden px-6 py-3 rounded-full text-sm sm:text-base font-bold text-yellow-400 border border-yellow-500 hover:text-black hover:bg-yellow-400 transition-all duration-300 shadow-[0_0_10px_#FFD700,0_0_20px_#FFD70033]">
+        Upload a Video
       </a>
-      <a href="/feed"
-         class="bg-white/10 hover:bg-white/20 text-white border border-white px-6 py-3 rounded-full text-sm sm:text-base">
-         Watch Snaps
+      <a href="/feed" class="backdrop-blur-sm bg-white/5 hover:bg-white/10 border border-white/20 shadow-lg rounded-full px-6 py-3 text-white text-sm sm:text-base">
+        Watch Snaps
       </a>
     </div>
   </header>
 
-  <!-- GRID SECTION -->
-  <main class="flex-1 w-full flex justify-center">
+  <main class="flex-1 w-full flex justify-center z-10">
     <div class="w-full max-w-4xl px-3 flex flex-col md:flex-row gap-8 items-start mx-auto">
-      <!-- LEFT: Trending -->
       <section class="flex-1 w-full flex flex-col items-center md:items-start">
         <div class="bg-[#232b3c] rounded-2xl p-6 shadow-lg w-full max-w-xs mx-auto glow-trending">
           <div class="text-yellow-400 text-xl font-semibold flex items-center gap-2 mb-4">
@@ -128,7 +122,6 @@
           </div>
         </div>
       </section>
-      <!-- RIGHT: Snapper of the Week -->
       <section class="flex-1 w-full flex flex-col items-center md:items-end">
         <div class="bg-[#181e29] rounded-2xl p-8 shadow-lg w-full max-w-xs mx-auto glow-snapper">
           <div class="text-pink-400 text-xl font-semibold mb-4 flex items-center gap-2 justify-center">
@@ -145,55 +138,37 @@
       </section>
     </div>
   </main>
-<!-- Glowing Add to Home Screen Banner/Button - Snapshnap Theme -->
-<div id="a2hs-banner"
-     class="fixed bottom-6 left-0 right-0 flex justify-center z-50"
-     style="display: none;">
-  <button id="installBtn"
-    onclick="installApp()"
-    class="flex items-center gap-3 px-8 py-4 rounded-full bg-black text-yellow-400 font-bold text-lg shadow-xl border-4 border-yellow-400 transition hover:scale-105 hover:bg-yellow-600 hover:text-black relative"
-    style="box-shadow: 0 0 36px 8px #FFD600, 0 4px 32px rgba(0,0,0,0.20); border-width: 4px;">
-    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#FFD600" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M8 17v-3a4 4 0 0 1 8 0v3" />
-      <polyline points="16 13 12 17 8 13" />
-      <line x1="12" y1="17" x2="12" y2="9" />
-      <path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 4 16.3" />
-    </svg>
-    <span class="tracking-wide drop-shadow-glow">Download Web App</span>
-  </button>
-</div>
 
-<script>
-  let deferredPrompt;
-  window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
-    document.getElementById('a2hs-banner').style.display = 'flex';
-  });
-
-  function installApp() {
-    if (deferredPrompt) {
-      deferredPrompt.prompt();
-      deferredPrompt.userChoice.then((choiceResult) => {
-        deferredPrompt = null;
-        document.getElementById('a2hs-banner').style.display = 'none';
-      });
+  <div id="a2hs-banner" class="fixed bottom-6 left-0 right-0 flex justify-center z-50" style="display: none;">
+    <button id="installBtn" onclick="installApp()" class="flex items-center gap-3 px-8 py-4 rounded-full bg-black text-yellow-400 font-bold text-lg shadow-xl border-4 border-yellow-400 transition hover:scale-105 hover:bg-yellow-600 hover:text-black relative" style="box-shadow: 0 0 36px 8px #FFD600, 0 4px 32px rgba(0,0,0,0.20); border-width: 4px;">
+      <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#FFD600" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M8 17v-3a4 4 0 0 1 8 0v3" />
+        <polyline points="16 13 12 17 8 13" />
+        <line x1="12" y1="17" x2="12" y2="9" />
+        <path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 4 16.3" />
+      </svg>
+      <span class="tracking-wide drop-shadow-glow">Download Web App</span>
+    </button>
+  </div>
+  <script>
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      document.getElementById('a2hs-banner').style.display = 'flex';
+    });
+    function installApp() {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then(() => {
+          deferredPrompt = null;
+          document.getElementById('a2hs-banner').style.display = 'none';
+        });
+      }
     }
-  }
-</script>
+  </script>
 
-<style>
-  /* Glowing text effect for yellow on black */
-  .drop-shadow-glow {
-    text-shadow:
-      0 0 8px #FFD600,
-      0 0 24px #FFD600,
-      0 0 32px #FFD600;
-  }
-</style>
-
-  <!-- Footer -->
-  <footer class="w-full flex flex-col items-center mt-10 mb-4">
+  <footer class="z-10 w-full flex flex-col items-center mt-10 mb-4">
     <div class="flex flex-wrap gap-6 justify-center items-center mb-2">
       <a href="/privacy" class="text-gray-400 hover:text-yellow-400 text-sm transition">Privacy Policy</a>
       <a href="/terms" class="text-gray-400 hover:text-yellow-400 text-sm transition">Terms</a>
@@ -202,6 +177,5 @@
     </div>
     <div class="text-xs text-gray-600">&copy; <%= new Date().getFullYear() %> SnapNews. All rights reserved.</div>
   </footer>
-
 </body>
 </html>
