@@ -134,6 +134,52 @@
       </section>
     </div>
   </main>
+<!-- Glowing Add to Home Screen Banner/Button - Snapshnap Theme -->
+<div id="a2hs-banner"
+     class="fixed bottom-6 left-0 right-0 flex justify-center z-50"
+     style="display: none;">
+  <button id="installBtn"
+    onclick="installApp()"
+    class="flex items-center gap-3 px-8 py-4 rounded-full bg-black text-yellow-400 font-bold text-lg shadow-xl border-4 border-yellow-400 transition hover:scale-105 hover:bg-yellow-600 hover:text-black relative"
+    style="box-shadow: 0 0 36px 8px #FFD600, 0 4px 32px rgba(0,0,0,0.20); border-width: 4px;">
+    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#FFD600" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M8 17v-3a4 4 0 0 1 8 0v3" />
+      <polyline points="16 13 12 17 8 13" />
+      <line x1="12" y1="17" x2="12" y2="9" />
+      <path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 4 16.3" />
+    </svg>
+    <span class="tracking-wide drop-shadow-glow">Download Web App</span>
+  </button>
+</div>
+
+<script>
+  let deferredPrompt;
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    document.getElementById('a2hs-banner').style.display = 'flex';
+  });
+
+  function installApp() {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then((choiceResult) => {
+        deferredPrompt = null;
+        document.getElementById('a2hs-banner').style.display = 'none';
+      });
+    }
+  }
+</script>
+
+<style>
+  /* Glowing text effect for yellow on black */
+  .drop-shadow-glow {
+    text-shadow:
+      0 0 8px #FFD600,
+      0 0 24px #FFD600,
+      0 0 32px #FFD600;
+  }
+</style>
 
   <!-- Footer -->
   <footer class="w-full flex flex-col items-center mt-10 mb-4">
