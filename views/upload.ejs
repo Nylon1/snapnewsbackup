@@ -2,102 +2,668 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
   <title>Upload | SnapNews</title>
   <style>
-    body { margin: 0; background-color: #111; color: #fff; font-family: 'Segoe UI', sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; }
-    .rules { background: #191e2c; color: #fff; border-left: 4px solid #ffd900; padding: 1em 1.4em; border-radius: 1em; margin-bottom: 1.3em;}
-    form { display: flex; flex-direction: column; align-items: center; background-color: #1c1c1c; padding: 2rem; border-radius: 20px; box-shadow: 0 8px 20px rgba(0,0,0,0.5), 0 4px 10px rgba(0,0,0,0.3); transition: transform 0.3s ease; }
-    form:hover { transform: translateY(-5px); }
-    .upload-label { font-size: 5rem; cursor: pointer; color: #888; border: 3px dashed #333; border-radius: 50%; width: 160px; height: 160px; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; animation: pulse 2s infinite; }
-    .upload-label:hover { background-color: #222; color: #0af; border-color: #0af; transform: scale(1.05); }
-    input[type="file"] { display: none; }
-    input[type="text"], textarea, select { margin-top: 1rem; padding: 0.5rem; width: 100%; max-width: 300px; border: none; border-radius: 8px; box-shadow: inset 0 0 5px rgba(0,0,0,0.3); transition: all 0.2s ease; }
-    input[type="text"]:hover, textarea:hover, select:hover { background-color: #222; color: #0af; }
-    input[type="text"]:focus, textarea:focus, select:focus { outline: none; box-shadow: 0 0 8px #0af; background-color: #222; }
-    button { margin-top: 1rem; padding: 0.75rem 2rem; font-size: 1rem; background-color: #0af; color: #fff; border: none; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,170,255,0.3); cursor: pointer; transition: all 0.3s ease; }
-    button:hover { background-color: #08c; box-shadow: 0 6px 16px rgba(0,170,255,0.5); transform: translateY(-2px); }
-    .progress-bar { width: 100%; max-width: 300px; height: 8px; background-color: #333; border-radius: 4px; margin-top: 1rem; overflow: hidden; display: none; }
-    .progress-bar-fill { height: 100%; background-color: #0af; width: 0%; transition: width 0.3s ease; }
-    @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.07); } }
+    /*=====================
+      THEME VARIABLES
+    =====================*/
+    :root {
+      --accent: #0af;
+      --accent-hover: #08c;
+      --bg: #111;
+      --fg: #fff;
+      --card-bg: #1c1c1c;
+      --card-shadow: rgba(0, 0, 0, 0.5);
+      --highlight: #ffd900;
+      --rule-bg: #191e2c;
+    }
+
+    /*=====================
+      GLOBAL RESET & BASE
+    =====================*/
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      background-color: var(--bg);
+      color: var(--fg);
+      font-family: "Segoe UI", sans-serif;
+      overflow: hidden; /* to contain particle background */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    /*=====================
+      SUBTLE PARTICLE BG
+    =====================*/
+    #particle-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .particle {
+      position: absolute;
+      background-color: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      animation: float 20s infinite;
+    }
+    @keyframes float {
+      0% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-800px) scale(0.5);
+        opacity: 0;
+      }
+    }
+
+    /*=====================
+      RULES TOOLTIP
+    =====================*/
+    .rules-container {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      z-index: 2;
+    }
+    .rules-icon {
+      font-size: 1.4rem;
+      color: var(--accent);
+      cursor: pointer;
+      transition: color 0.2s ease;
+    }
+    .rules-icon:hover {
+      color: var(--accent-hover);
+    }
+    .rules-box {
+      margin-top: 0.5rem;
+      display: none;
+      background-color: var(--rule-bg);
+      color: var(--fg);
+      border-left: 4px solid var(--highlight);
+      padding: 1em 1.4em;
+      border-radius: 1em;
+      max-width: 280px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
+      animation: fadeIn 0.3s ease;
+    }
+    .rules-box.visible {
+      display: block;
+    }
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /*=====================
+      UPLOAD FORM CARD
+    =====================*/
+    form {
+      position: relative;
+      z-index: 1;
+      background-color: var(--card-bg);
+      padding: 2rem;
+      border-radius: 20px;
+      box-shadow: 0 8px 20px var(--card-shadow),
+        0 4px 10px rgba(0, 0, 0, 0.3);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 320px;
+      opacity: 0;
+      transform: translateY(40px);
+      animation: slideUp 0.6s ease forwards;
+    }
+    @keyframes slideUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /*=====================
+      UPLOAD ZONE (LABEL)
+    =====================*/
+    .upload-label {
+      font-size: 4rem;
+      cursor: pointer;
+      color: #888;
+      border: 3px dashed #333;
+      border-radius: 50%;
+      width: 160px;
+      height: 160px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      animation: pulse 2s infinite;
+      position: relative;
+    }
+    @keyframes pulse {
+      0%,
+      100% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.07);
+      }
+    }
+    .upload-label.hovered {
+      background-color: #222;
+      color: var(--accent);
+      border-color: var(--accent);
+      transform: scale(1.05);
+    }
+    .upload-label.has-file {
+      border-color: var(--accent);
+      color: var(--accent);
+      animation: none;
+    }
+    /* Placeholder for preview image/video */
+    #filePreview {
+      position: absolute;
+      top: -20px;
+      left: -20px;
+      width: 200px;
+      height: 112.5px; /* 16:9 */
+      background-color: #000;
+      border-radius: 8px;
+      overflow: hidden;
+      display: none;
+      border: 2px solid var(--accent);
+      z-index: 1;
+    }
+    #filePreview video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /*=====================
+      INPUTS & TEXTAREAS
+    =====================*/
+    input[type="file"] {
+      display: none;
+    }
+    input[type="text"],
+    textarea,
+    select {
+      margin-top: 1rem;
+      padding: 0.5rem;
+      width: 100%;
+      border: none;
+      border-radius: 8px;
+      background-color: #2a2a2a;
+      color: var(--fg);
+      box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.3);
+      transition: all 0.2s ease;
+      font-size: 0.95rem;
+    }
+    input[type="text"]::placeholder,
+    textarea::placeholder {
+      color: #bbb;
+    }
+    input[type="text"]:hover,
+    textarea:hover,
+    select:hover {
+      background-color: #222;
+      color: var(--accent);
+    }
+    input[type="text"]:focus,
+    textarea:focus,
+    select:focus {
+      outline: none;
+      box-shadow: 0 0 8px var(--accent);
+      background-color: #222;
+    }
+    textarea {
+      resize: vertical;
+      min-height: 80px;
+      font-family: inherit;
+    }
+    select {
+      appearance: none;
+      background-image: url('data:image/svg+xml;charset=UTF-8,<svg%20width%3D"10"%20height%3D"6"%20viewBox%3D"0%200%2010%206"%20fill%3D"none"%20xmlns%3D"http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg"><path%20d%3D"M1%200L5%204L9%200"%20stroke="%23ccc"%20stroke-width%3D"2"/><%2Fsvg>');
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      background-size: 10px 6px;
+    }
+
+    /*=====================
+      CHARACTER COUNTERS
+    =====================*/
+    .char-counter {
+      font-size: 0.75rem;
+      color: #888;
+      margin-top: 0.2rem;
+      width: 100%;
+      text-align: right;
+    }
+    .char-counter.exceeded {
+      color: #e74c3c;
+    }
+
+    /*=====================
+      BUTTONS
+    =====================*/
+    .btn {
+      margin-top: 1rem;
+      padding: 0.75rem 2rem;
+      font-size: 1rem;
+      background-color: var(--accent);
+      color: var(--fg);
+      border: none;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0, 170, 255, 0.3);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .btn:hover {
+      background-color: var(--accent-hover);
+      box-shadow: 0 6px 16px rgba(0, 170, 255, 0.5);
+      transform: translateY(-2px);
+    }
+    .btn.cancel {
+      background-color: #e74c3c;
+      box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3);
+    }
+    .btn.cancel:hover {
+      background-color: #c0392b;
+      box-shadow: 0 6px 16px rgba(192, 57, 43, 0.5);
+    }
+
+    /*=====================
+      PROGRESS BAR
+    =====================*/
+    .progress-container {
+      margin-top: 1rem;
+      width: 100%;
+      background-color: #333;
+      border-radius: 4px;
+      overflow: hidden;
+      display: none;
+      position: relative;
+      height: 20px;
+    }
+    .progress-fill {
+      height: 100%;
+      background-color: var(--accent);
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+    .progress-text {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      color: var(--fg);
+      font-size: 0.85rem;
+      line-height: 20px;
+      font-weight: bold;
+    }
+
+    /*=====================
+      METADATA DISPLAY
+    =====================*/
+    .file-info {
+      margin-top: 0.5rem;
+      font-size: 0.9rem;
+      color: #bbb;
+      text-align: center;
+    }
+
+    /*=====================
+      USER WELCOME (Optional)
+    =====================*/
+    .welcome {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      font-size: 0.95rem;
+      color: #ccc;
+      z-index: 2;
+    }
+    .welcome b {
+      color: var(--accent);
+    }
+
+    /*=====================
+      BACK TO HOME LINK
+    =====================*/
+    .home-link {
+      margin-top: 1.5rem;
+      color: var(--accent);
+      font-size: 0.9rem;
+      text-decoration: none;
+      transition: color 0.2s ease;
+      z-index: 1;
+    }
+    .home-link:hover {
+      color: var(--accent-hover);
+    }
   </style>
 </head>
 <body>
-  <div class="rules">
-    <strong>Upload Rules:</strong>
-    <ul>
-      <li>Maximum duration: <b>10 minutes</b></li>
-      <li>Maximum file size: <b>200MB</b></li>
-      <li>Only Authorised Users permitted to upload </li>
-      <li>Contact for upload access</li>
-    </ul>
+  <!-- PARTICLE BACKGROUND -->
+  <div id="particle-container"></div>
+
+  <!-- OPTIONAL: USER WELCOME (delete or modify if you don't have user data) -->
+  <div class="welcome">
+    Hi, <b>USERNAME</b>! Ready to share your story?
   </div>
+
+  <!-- RULES TOOLTIP -->
+  <div class="rules-container">
+    <span class="rules-icon" id="rulesIcon" title="Upload Rules">&#9432;</span>
+    <div class="rules-box" id="rulesBox">
+      <strong>Upload Rules:</strong>
+      <ul style="margin-top: 0.6rem; padding-left: 1.2rem; line-height: 1.4;">
+        <li>Maximum duration: <b>10 minutes</b></li>
+        <li>Maximum file size: <b>200MB</b></li>
+        <li>Only Authorised Users permitted to upload</li>
+        <li>Contact for upload access</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- UPLOAD FORM -->
   <form id="uploadForm" enctype="multipart/form-data">
-    <label for="video" class="upload-label" id="plusLabel">+</label>
-    <input type="file" name="video" id="video" accept="video/*" required />
-    <input type="text" name="title" placeholder="Video Title" maxlength="100" required />
-    <textarea name="description" placeholder="Short Description" maxlength="500" required></textarea>
-    <select name="category" required>
+    <!-- DRAG & DROP / CLICK ZONE -->
+    <div
+      class="upload-label"
+      id="plusLabel"
+      title="Click or drop a video here"
+    >
+      +
+      <!-- VIDEO PREVIEW OVERLAY -->
+      <div id="filePreview">
+        <video muted loop></video>
+      </div>
+    </div>
+    <input
+      type="file"
+      name="video"
+      id="video"
+      accept="video/*"
+      required
+    />
+
+    <!-- METADATA (filename, size, duration) -->
+    <div class="file-info" id="fileInfo"></div>
+
+    <!-- TITLE INPUT + COUNTER -->
+    <input
+      type="text"
+      name="title"
+      id="title"
+      placeholder="Video Title"
+      maxlength="100"
+      required
+    />
+    <div class="char-counter" id="titleCounter">0 / 100</div>
+
+    <!-- DESCRIPTION TEXTAREA + COUNTER -->
+    <textarea
+      name="description"
+      id="description"
+      placeholder="Short Description"
+      maxlength="500"
+      required
+    ></textarea>
+    <div class="char-counter" id="descCounter">0 / 500</div>
+
+    <!-- CATEGORY SELECT -->
+    <select name="category" id="category" required>
       <option value="">Choose Category</option>
-      <option value="World">World</option>
-      <option value="Travel">Travel</option>
-      <option value="Food">Food</option>
-      <option value="Money">Money</option>
-      <option value="Health">Health</option>
+      <option value="World">🌍 World</option>
+      <option value="Travel">✈️ Travel</option>
+      <option value="Food">🍔 Food</option>
+      <option value="Money">💰 Money</option>
+      <option value="Health">🩺 Health</option>
     </select>
-    <button type="submit">Upload</button>
-    <div class="progress-bar" id="progressContainer">
-      <div class="progress-bar-fill" id="progressBar"></div>
+
+    <!-- UPLOAD / CANCEL BUTTONS -->
+    <button type="submit" class="btn" id="submitBtn">Upload</button>
+    <button
+      type="button"
+      class="btn cancel"
+      id="cancelBtn"
+      style="display: none; margin-top: 0.5rem;"
+    >
+      Cancel Upload
+    </button>
+
+    <!-- PROGRESS BAR -->
+    <div class="progress-container" id="progressContainer">
+      <div class="progress-fill" id="progressFill"></div>
+      <div class="progress-text" id="progressText">0%</div>
     </div>
   </form>
 
+  <!-- BACK TO HOME LINK -->
+  <a href="/" class="home-link">← Back to Home</a>
+
+  <!--=====================
+    SCRIPTS
+  =====================-->
   <script>
-const API_BASE = 'https://snapbackend-new.onrender.com';
+    const API_BASE = "https://snapbackend-new.onrender.com";
+    const uploadInput = document.getElementById("video");
+    const plusLabel = document.getElementById("plusLabel");
+    const previewBox = document.getElementById("filePreview");
+    const previewVideo = previewBox.querySelector("video");
+    const fileInfo = document.getElementById("fileInfo");
+    const titleField = document.getElementById("title");
+    const descField = document.getElementById("description");
+    const titleCounter = document.getElementById("titleCounter");
+    const descCounter = document.getElementById("descCounter");
+    const ruleIcon = document.getElementById("rulesIcon");
+    const ruleBox = document.getElementById("rulesBox");
+    const uploadForm = document.getElementById("uploadForm");
+    const progressContainer = document.getElementById("progressContainer");
+    const progressFill = document.getElementById("progressFill");
+    const progressText = document.getElementById("progressText");
+    const submitBtn = document.getElementById("submitBtn");
+    const cancelBtn = document.getElementById("cancelBtn");
 
-window.addEventListener('DOMContentLoaded', () => {
-  setTimeout(() => document.getElementById('video').click(), 500);
-});
+    let xhr; // to hold the XMLHttpRequest so we can cancel
 
-document.getElementById('video').addEventListener('change', () => {
-  document.getElementById('plusLabel').style.color = '#0af';
-  document.getElementById('plusLabel').style.borderColor = '#0af';
-});
+    /*==========================
+      RULES TOOLTIP TOGGLE
+    ==========================*/
+    ruleIcon.addEventListener("click", () => {
+      ruleBox.classList.toggle("visible");
+    });
+    // hide rules if clicking outside
+    document.addEventListener("click", (e) => {
+      if (
+        !ruleIcon.contains(e.target) &&
+        !ruleBox.contains(e.target)
+      ) {
+        ruleBox.classList.remove("visible");
+      }
+    });
 
-document.getElementById('uploadForm').addEventListener('submit', async function(e) {
-  e.preventDefault();
-  const formData = new FormData(this);
-  const progressBar = document.getElementById('progressBar');
-  const progressContainer = document.getElementById('progressContainer');
-  progressContainer.style.display = 'block';
+    /*==========================
+      AUTO-OPEN FILE DIALOG
+    ==========================*/
+    window.addEventListener("DOMContentLoaded", () => {
+      setTimeout(() => uploadInput.click(), 500);
+    });
 
-  const xhr = new XMLHttpRequest();
-  xhr.open('POST', API_BASE + '/upload'); // Send to YOUR BACKEND, not MediaCMS!
+    /*==========================
+      DRAG & DROP HANDLERS
+    ==========================*/
+    plusLabel.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      plusLabel.classList.add("hovered");
+    });
+    plusLabel.addEventListener("dragleave", () => {
+      plusLabel.classList.remove("hovered");
+    });
+    plusLabel.addEventListener("drop", (e) => {
+      e.preventDefault();
+      plusLabel.classList.remove("hovered");
+      const file = e.dataTransfer.files[0];
+      if (file && file.type.startsWith("video/")) {
+        uploadInput.files = e.dataTransfer.files;
+        handleFileSelect();
+      }
+    });
 
-  xhr.upload.addEventListener('progress', event => {
-    if (event.lengthComputable) {
-      const percent = (event.loaded / event.total) * 100;
-      progressBar.style.width = percent + '%';
+    /*==========================
+      CLICK TO SELECT FILE
+    ==========================*/
+    plusLabel.addEventListener("click", () => {
+      uploadInput.click();
+    });
+    uploadInput.addEventListener("change", handleFileSelect);
+
+    function handleFileSelect() {
+      const file = uploadInput.files[0];
+      if (!file) return;
+      plusLabel.classList.add("has-file");
+      // Show preview
+      const url = URL.createObjectURL(file);
+      previewVideo.src = url;
+      previewBox.style.display = "block";
+
+      // Once metadata loads, display duration & size
+      previewVideo.addEventListener(
+        "loadedmetadata",
+        () => {
+          const duration = Math.floor(
+            previewVideo.duration
+          );
+          const sizeMB = (file.size / (1024 * 1024)).toFixed(2);
+          fileInfo.textContent = `${file.name} • ${duration}s • ${sizeMB}MB`;
+        },
+        { once: true }
+      );
     }
-  });
 
-  xhr.onload = () => {
-    if (xhr.status >= 200 && xhr.status < 300) {
-      alert('Upload successful! Your video is pending admin approval.');
-      window.location.href = API_BASE + '/feed';
-    } else {
-      alert('Upload failed: ' + xhr.responseText);
-      progressContainer.style.display = 'none';
-      progressBar.style.width = '0%';
+    /*==========================
+      CHARACTER COUNTERS
+    ==========================*/
+    titleField.addEventListener("input", () => {
+      const len = titleField.value.length;
+      titleCounter.textContent = `${len} / 100`;
+      titleCounter.classList.toggle("exceeded", len > 100);
+    });
+    descField.addEventListener("input", () => {
+      const len = descField.value.length;
+      descCounter.textContent = `${len} / 500`;
+      descCounter.classList.toggle("exceeded", len > 500);
+    });
+
+    /*==========================
+      UPLOAD FORM SUBMISSION
+    ==========================*/
+    uploadForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+      const formData = new FormData(this);
+
+      // Show progress UI
+      progressContainer.style.display = "block";
+      cancelBtn.style.display = "inline-block";
+      submitBtn.disabled = true;
+
+      xhr = new XMLHttpRequest();
+      xhr.open("POST", API_BASE + "/upload");
+
+      xhr.upload.addEventListener("progress", (event) => {
+        if (event.lengthComputable) {
+          const percent = Math.round(
+            (event.loaded / event.total) * 100
+          );
+          progressFill.style.width = percent + "%";
+          progressText.textContent = percent + "%";
+        }
+      });
+
+      xhr.onload = () => {
+        if (xhr.status >= 200 && xhr.status < 300) {
+          progressText.textContent = "Done!";
+          setTimeout(() => {
+            alert(
+              "Upload successful! Your video is pending admin approval."
+            );
+            window.location.href = API_BASE + "/feed";
+          }, 500);
+        } else {
+          alert("Upload failed: " + xhr.responseText);
+          resetUploadUI();
+        }
+      };
+
+      xhr.onerror = () => {
+        alert("Network error during upload");
+        resetUploadUI();
+      };
+
+      xhr.send(formData);
+    });
+
+    /*==========================
+      CANCEL UPLOAD
+    ==========================*/
+    cancelBtn.addEventListener("click", () => {
+      if (xhr) {
+        xhr.abort();
+        alert("Upload cancelled.");
+        resetUploadUI();
+      }
+    });
+
+    function resetUploadUI() {
+      progressContainer.style.display = "none";
+      progressFill.style.width = "0%";
+      progressText.textContent = "0%";
+      submitBtn.disabled = false;
+      cancelBtn.style.display = "none";
     }
-  };
 
-  xhr.onerror = () => {
-    alert('Network error during upload');
-    progressContainer.style.display = 'none';
-    progressBar.style.width = '0%';
-  };
+    /*==========================
+      PARTICLE GENERATOR
+    ==========================*/
+    function createParticles() {
+      const container = document.getElementById("particle-container");
+      const num = 30; // number of particles
+      for (let i = 0; i < num; i++) {
+        const p = document.createElement("div");
+        p.classList.add("particle");
+        const size = Math.random() * 4 + 1; // 1px to 5px
+        p.style.width = size + "px";
+        p.style.height = size + "px";
+        p.style.left = Math.random() * 100 + "%";
+        p.style.top = Math.random() * 100 + "%";
+        p.style.animationDuration =
+          Math.random() * 15 + 5 + "s";
+        container.appendChild(p);
+      }
+    }
+    createParticles();
+  </script>
+</body>
+</html>
 
-  xhr.send(formData); // Send your original formData (browser handles multipart)
-});
-
-</script>
