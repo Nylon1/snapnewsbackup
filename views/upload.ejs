@@ -34,7 +34,7 @@
       background-color: var(--bg);
       color: var(--fg);
       font-family: "Segoe UI", sans-serif;
-      overflow: hidden; /* to contain particle background */
+      overflow: hidden;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -168,24 +168,17 @@
         transform: scale(1.07);
       }
     }
-    .upload-label.hovered {
-      background-color: #222;
-      color: var(--accent);
-      border-color: var(--accent);
-      transform: scale(1.05);
-    }
     .upload-label.has-file {
       border-color: var(--accent);
       color: var(--accent);
       animation: none;
     }
-    /* Placeholder for preview image/video */
     #filePreview {
       position: absolute;
       top: -20px;
       left: -20px;
       width: 200px;
-      height: 112.5px; /* 16:9 */
+      height: 112.5px;
       background-color: #000;
       border-radius: 8px;
       overflow: hidden;
@@ -250,6 +243,26 @@
     }
 
     /*=====================
+      PROGRESS BAR (ORIGINAL)
+    =====================*/
+    .progress-bar {
+      width: 100%;
+      max-width: 300px;
+      height: 8px;
+      background-color: #333;
+      border-radius: 4px;
+      margin-top: 1rem;
+      overflow: hidden;
+      display: none;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background-color: var(--accent);
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    /*=====================
       CHARACTER COUNTERS
     =====================*/
     .char-counter {
@@ -290,36 +303,6 @@
     .btn.cancel:hover {
       background-color: #c0392b;
       box-shadow: 0 6px 16px rgba(192, 57, 43, 0.5);
-    }
-
-    /*=====================
-      PROGRESS BAR
-    =====================*/
-    .progress-container {
-      margin-top: 1rem;
-      width: 100%;
-      background-color: #333;
-      border-radius: 4px;
-      overflow: hidden;
-      display: none;
-      position: relative;
-      height: 20px;
-    }
-    .progress-fill {
-      height: 100%;
-      background-color: var(--accent);
-      width: 0%;
-      transition: width 0.3s ease;
-    }
-    .progress-text {
-      position: absolute;
-      top: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      color: var(--fg);
-      font-size: 0.85rem;
-      line-height: 20px;
-      font-weight: bold;
     }
 
     /*=====================
@@ -395,7 +378,7 @@
       title="Click or drop a video here"
     >
       +
-      <!-- VIDEO PREVIEW OVERLAY -->
+      <!-- VIDEO PREVIEW OVERLAY (optional; hide if you don’t need preview) -->
       <div id="filePreview">
         <video muted loop></video>
       </div>
@@ -442,228 +425,69 @@
       <option value="Health">🩺 Health</option>
     </select>
 
-    <!-- UPLOAD / CANCEL BUTTONS -->
+    <!-- UPLOAD BUTTON -->
     <button type="submit" class="btn" id="submitBtn">Upload</button>
-    <button
-      type="button"
-      class="btn cancel"
-      id="cancelBtn"
-      style="display: none; margin-top: 0.5rem;"
-    >
-      Cancel Upload
-    </button>
 
-    <!-- PROGRESS BAR -->
-    <div class="progress-container" id="progressContainer">
-      <div class="progress-fill" id="progressFill"></div>
-      <div class="progress-text" id="progressText">0%</div>
+    <!-- PROGRESS BAR (ORIGINAL) -->
+    <div class="progress-bar" id="progressContainer">
+      <div class="progress-bar-fill" id="progressBar"></div>
     </div>
   </form>
 
   <!-- BACK TO HOME LINK -->
-  <a href="/" class="home-link">← Back to Home</a>
+  <a href="/" class="https://snapshnap.com/">← Back to Home</a>
 
   <!--=====================
-    SCRIPTS
+    SCRIPT (UNCHANGED)
   =====================-->
   <script>
-    const API_BASE = "https://snapbackend-new.onrender.com";
-    const uploadInput = document.getElementById("video");
-    const plusLabel = document.getElementById("plusLabel");
-    const previewBox = document.getElementById("filePreview");
-    const previewVideo = previewBox.querySelector("video");
-    const fileInfo = document.getElementById("fileInfo");
-    const titleField = document.getElementById("title");
-    const descField = document.getElementById("description");
-    const titleCounter = document.getElementById("titleCounter");
-    const descCounter = document.getElementById("descCounter");
-    const ruleIcon = document.getElementById("rulesIcon");
-    const ruleBox = document.getElementById("rulesBox");
-    const uploadForm = document.getElementById("uploadForm");
-    const progressContainer = document.getElementById("progressContainer");
-    const progressFill = document.getElementById("progressFill");
-    const progressText = document.getElementById("progressText");
-    const submitBtn = document.getElementById("submitBtn");
-    const cancelBtn = document.getElementById("cancelBtn");
+const API_BASE = 'https://snapbackend-new.onrender.com';
 
-    let xhr; // to hold the XMLHttpRequest so we can cancel
+window.addEventListener('DOMContentLoaded', () => {
+  setTimeout(() => document.getElementById('video').click(), 500);
+});
 
-    /*==========================
-      RULES TOOLTIP TOGGLE
-    ==========================*/
-    ruleIcon.addEventListener("click", () => {
-      ruleBox.classList.toggle("visible");
-    });
-    // hide rules if clicking outside
-    document.addEventListener("click", (e) => {
-      if (
-        !ruleIcon.contains(e.target) &&
-        !ruleBox.contains(e.target)
-      ) {
-        ruleBox.classList.remove("visible");
-      }
-    });
+document.getElementById('video').addEventListener('change', () => {
+  document.getElementById('plusLabel').style.color = '#0af';
+  document.getElementById('plusLabel').style.borderColor = '#0af';
+});
 
-    /*==========================
-      AUTO-OPEN FILE DIALOG
-    ==========================*/
-    window.addEventListener("DOMContentLoaded", () => {
-      setTimeout(() => uploadInput.click(), 500);
-    });
+document.getElementById('uploadForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const formData = new FormData(this);
+  const progressBar = document.getElementById('progressBar');
+  const progressContainer = document.getElementById('progressContainer');
+  progressContainer.style.display = 'block';
 
-    /*==========================
-      DRAG & DROP HANDLERS
-    ==========================*/
-    plusLabel.addEventListener("dragover", (e) => {
-      e.preventDefault();
-      plusLabel.classList.add("hovered");
-    });
-    plusLabel.addEventListener("dragleave", () => {
-      plusLabel.classList.remove("hovered");
-    });
-    plusLabel.addEventListener("drop", (e) => {
-      e.preventDefault();
-      plusLabel.classList.remove("hovered");
-      const file = e.dataTransfer.files[0];
-      if (file && file.type.startsWith("video/")) {
-        uploadInput.files = e.dataTransfer.files;
-        handleFileSelect();
-      }
-    });
+  const xhr = new XMLHttpRequest();
+  xhr.open('POST', API_BASE + '/upload'); // Send to YOUR BACKEND, not MediaCMS!
 
-    /*==========================
-      CLICK TO SELECT FILE
-    ==========================*/
-    plusLabel.addEventListener("click", () => {
-      uploadInput.click();
-    });
-    uploadInput.addEventListener("change", handleFileSelect);
-
-    function handleFileSelect() {
-      const file = uploadInput.files[0];
-      if (!file) return;
-      plusLabel.classList.add("has-file");
-      // Show preview
-      const url = URL.createObjectURL(file);
-      previewVideo.src = url;
-      previewBox.style.display = "block";
-
-      // Once metadata loads, display duration & size
-      previewVideo.addEventListener(
-        "loadedmetadata",
-        () => {
-          const duration = Math.floor(
-            previewVideo.duration
-          );
-          const sizeMB = (file.size / (1024 * 1024)).toFixed(2);
-          fileInfo.textContent = `${file.name} • ${duration}s • ${sizeMB}MB`;
-        },
-        { once: true }
-      );
+  xhr.upload.addEventListener('progress', event => {
+    if (event.lengthComputable) {
+      const percent = (event.loaded / event.total) * 100;
+      progressBar.style.width = percent + '%';
     }
+  });
 
-    /*==========================
-      CHARACTER COUNTERS
-    ==========================*/
-    titleField.addEventListener("input", () => {
-      const len = titleField.value.length;
-      titleCounter.textContent = `${len} / 100`;
-      titleCounter.classList.toggle("exceeded", len > 100);
-    });
-    descField.addEventListener("input", () => {
-      const len = descField.value.length;
-      descCounter.textContent = `${len} / 500`;
-      descCounter.classList.toggle("exceeded", len > 500);
-    });
-
-    /*==========================
-      UPLOAD FORM SUBMISSION
-    ==========================*/
-    uploadForm.addEventListener("submit", function (e) {
-      e.preventDefault();
-      const formData = new FormData(this);
-
-      // Show progress UI
-      progressContainer.style.display = "block";
-      cancelBtn.style.display = "inline-block";
-      submitBtn.disabled = true;
-
-      xhr = new XMLHttpRequest();
-      xhr.open("POST", API_BASE + "/upload");
-
-      xhr.upload.addEventListener("progress", (event) => {
-        if (event.lengthComputable) {
-          const percent = Math.round(
-            (event.loaded / event.total) * 100
-          );
-          progressFill.style.width = percent + "%";
-          progressText.textContent = percent + "%";
-        }
-      });
-
-      xhr.onload = () => {
-        if (xhr.status >= 200 && xhr.status < 300) {
-          progressText.textContent = "Done!";
-          setTimeout(() => {
-            alert(
-              "Upload successful! Your video is pending admin approval."
-            );
-            window.location.href = API_BASE + "/feed";
-          }, 500);
-        } else {
-          alert("Upload failed: " + xhr.responseText);
-          resetUploadUI();
-        }
-      };
-
-      xhr.onerror = () => {
-        alert("Network error during upload");
-        resetUploadUI();
-      };
-
-      xhr.send(formData);
-    });
-
-    /*==========================
-      CANCEL UPLOAD
-    ==========================*/
-    cancelBtn.addEventListener("click", () => {
-      if (xhr) {
-        xhr.abort();
-        alert("Upload cancelled.");
-        resetUploadUI();
-      }
-    });
-
-    function resetUploadUI() {
-      progressContainer.style.display = "none";
-      progressFill.style.width = "0%";
-      progressText.textContent = "0%";
-      submitBtn.disabled = false;
-      cancelBtn.style.display = "none";
+  xhr.onload = () => {
+    if (xhr.status >= 200 && xhr.status < 300) {
+      alert('Upload successful! Your video is pending admin approval.');
+      window.location.href = API_BASE + '/feed';
+    } else {
+      alert('Upload failed: ' + xhr.responseText);
+      progressContainer.style.display = 'none';
+      progressBar.style.width = '0%';
     }
+  };
 
-    /*==========================
-      PARTICLE GENERATOR
-    ==========================*/
-    function createParticles() {
-      const container = document.getElementById("particle-container");
-      const num = 30; // number of particles
-      for (let i = 0; i < num; i++) {
-        const p = document.createElement("div");
-        p.classList.add("particle");
-        const size = Math.random() * 4 + 1; // 1px to 5px
-        p.style.width = size + "px";
-        p.style.height = size + "px";
-        p.style.left = Math.random() * 100 + "%";
-        p.style.top = Math.random() * 100 + "%";
-        p.style.animationDuration =
-          Math.random() * 15 + 5 + "s";
-        container.appendChild(p);
-      }
-    }
-    createParticles();
-  </script>
+  xhr.onerror = () => {
+    alert('Network error during upload');
+    progressContainer.style.display = 'none';
+    progressBar.style.width = '0%';
+  };
+
+  xhr.send(formData); // Send your original formData (browser handles multipart)
+});
+</script>
 </body>
 </html>
-
