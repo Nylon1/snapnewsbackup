@@ -34,7 +34,7 @@
       background-color: var(--bg);
       color: var(--fg);
       font-family: "Segoe UI", sans-serif;
-      overflow: hidden;
+      overflow: hidden; /* to contain particle background */
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -168,17 +168,24 @@
         transform: scale(1.07);
       }
     }
+    .upload-label.hovered {
+      background-color: #222;
+      color: var(--accent);
+      border-color: var(--accent);
+      transform: scale(1.05);
+    }
     .upload-label.has-file {
       border-color: var(--accent);
       color: var(--accent);
       animation: none;
     }
+    /* Placeholder for preview image/video */
     #filePreview {
       position: absolute;
       top: -20px;
       left: -20px;
       width: 200px;
-      height: 112.5px;
+      height: 112.5px; /* 16:9 */
       background-color: #000;
       border-radius: 8px;
       overflow: hidden;
@@ -243,26 +250,6 @@
     }
 
     /*=====================
-      PROGRESS BAR (ORIGINAL)
-    =====================*/
-    .progress-bar {
-      width: 100%;
-      max-width: 300px;
-      height: 8px;
-      background-color: #333;
-      border-radius: 4px;
-      margin-top: 1rem;
-      overflow: hidden;
-      display: none;
-    }
-    .progress-bar-fill {
-      height: 100%;
-      background-color: var(--accent);
-      width: 0%;
-      transition: width 0.3s ease;
-    }
-
-    /*=====================
       CHARACTER COUNTERS
     =====================*/
     .char-counter {
@@ -303,6 +290,26 @@
     .btn.cancel:hover {
       background-color: #c0392b;
       box-shadow: 0 6px 16px rgba(192, 57, 43, 0.5);
+    }
+
+    /*=====================
+      PROGRESS BAR (RESTORED TO ORIGINAL IDS)
+    =====================*/
+    .progress-bar {
+      width: 100%;
+      max-width: 300px;
+      height: 8px;
+      background-color: #333;
+      border-radius: 4px;
+      margin-top: 1rem;
+      overflow: hidden;
+      display: none;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background-color: var(--accent);
+      width: 0%;
+      transition: width 0.3s ease;
     }
 
     /*=====================
@@ -378,7 +385,7 @@
       title="Click or drop a video here"
     >
       +
-      <!-- VIDEO PREVIEW OVERLAY (optional; hide if you don’t need preview) -->
+      <!-- VIDEO PREVIEW OVERLAY -->
       <div id="filePreview">
         <video muted loop></video>
       </div>
@@ -425,17 +432,25 @@
       <option value="Health">🩺 Health</option>
     </select>
 
-    <!-- UPLOAD BUTTON -->
+    <!-- UPLOAD / CANCEL BUTTONS -->
     <button type="submit" class="btn" id="submitBtn">Upload</button>
+    <button
+      type="button"
+      class="btn cancel"
+      id="cancelBtn"
+      style="display: none; margin-top: 0.5rem;"
+    >
+      Cancel Upload
+    </button>
 
-    <!-- PROGRESS BAR (ORIGINAL) -->
+    <!-- PROGRESS BAR (RESTORED TO ORIGINAL) -->
     <div class="progress-bar" id="progressContainer">
       <div class="progress-bar-fill" id="progressBar"></div>
     </div>
   </form>
 
   <!-- BACK TO HOME LINK -->
-  <a href="/" class="https://snapshnap.com/">← Back to Home</a>
+  <a href="/" class="home-link">← Back to Home</a>
 
   <!--=====================
     SCRIPT (UNCHANGED)
@@ -491,3 +506,4 @@ document.getElementById('uploadForm').addEventListener('submit', async function(
 </script>
 </body>
 </html>
+
