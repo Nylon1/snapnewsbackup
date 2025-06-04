@@ -69,7 +69,7 @@ onmouseout="this.style.background='#222';this.style.color='#FFD900'">
 </a>
 
 <script>
-const MEDIA_API = 'https://mediacms-cw-u46015.vm.elestio.app/api/v1/media/';
+const API_BASE = 'https://your-backend-domain/upload'; // <-- point to your deployed backend
 
 document.getElementById('uploadForm').addEventListener('submit', async function(e) {
   e.preventDefault();
@@ -80,20 +80,20 @@ document.getElementById('uploadForm').addEventListener('submit', async function(
   const category = document.querySelector('select[name="category"]').value;
 
   const formData = new FormData();
-  formData.append('media_file', file); // The key is 'media_file' for MediaCMS
+  formData.append('video', file); // Must match backend multer field!
   formData.append('title', title);
   formData.append('description', description);
   formData.append('category', category);
 
   try {
-    const response = await fetch(MEDIA_API, {
+    const response = await fetch(API_BASE, {
       method: 'POST',
       body: formData
     });
 
     if (response.ok) {
       alert('Upload successful! Your video is pending admin approval.');
-      window.location.href = '/'; // Change to your desired page
+      window.location.href = '/'; // or another page
     } else {
       const err = await response.text();
       alert('Upload failed: ' + err);
@@ -102,6 +102,7 @@ document.getElementById('uploadForm').addEventListener('submit', async function(
     alert('Network error: ' + err);
   }
 });
+
 
  </script>
 </body>
