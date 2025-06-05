@@ -47,3 +47,11 @@ function fetchVotes(videoId, container) {
       });
     });
 }
+const msg = document.createElement('div');
+msg.textContent = 'Vote submitted!';
+msg.style.color = '#ffd900';
+msg.style.marginTop = '0.5rem';
+msg.style.fontWeight = 'bold';
+msg.style.fontSize = '0.95rem';
+container.appendChild(msg);
+setTimeout(() => msg.remove(), 1500);
