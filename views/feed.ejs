@@ -347,12 +347,12 @@ const videoPageUrl = snapshnapBase + "/watch/" + video.friendly_token;
 <div class="snap-vote-card" data-videoid="<%= video.friendly_token %>">
   <h4 style="margin-top: 1rem; color: #ffd900;">Community Verdict</h4>
 
-  <div class="vote-buttons">
-    <button class="snap-vote-btn" data-vote="verified">✅ Verified</button>
-    <button class="snap-vote-btn" data-vote="fake">⚠️ Fake</button>
-    <button class="snap-vote-btn" data-vote="satire">🎭 Satire</button>
-    <button class="snap-vote-btn" data-vote="context">❓ Context Needed</button>
-  </div>
+<div class="card-actions">
+  <button class="vote-button" data-id="<%= video._id %>" data-type="verified">Verified</button>
+  <button class="vote-button" data-id="<%= video._id %>" data-type="fake">Fake</button>
+  <button class="vote-button" data-id="<%= video._id %>" data-type="satire">Satire</button>
+  <button class="vote-button" data-id="<%= video._id %>" data-type="context">Needs Context</button>
+</div>
 
   <div class="vote-results">
     <div>Verified <span class="vote-label-verified">0%</span>
@@ -416,7 +416,40 @@ document.querySelectorAll('.share-btn').forEach(function(btn) {
   });
 });
 
-  </script>
+  <script>
+  document.querySelectorAll('.vote-button').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const videoId = btn.getAttribute('data-id');
+      const voteType = btn.getAttribute('data-type');
+
+      if (!videoId || !voteType) {
+        alert('Missing vote info.');
+        return;
+      }
+
+      try {
+        const res = await fetch('https://snapbackend-new.onrender.com/api/votes', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ videoId, voteType })
+        });
+
+        const data = await res.json();
+        if (res.ok) {
+          alert(`You voted: ${voteType}`);
+        } else {
+          alert(data.message || 'Vote failed.');
+        }
+      } catch (err) {
+        alert('Vote failed. Check connection.');
+        console.error(err);
+      }
+    });
+  });
+</script>
+
 </body>
 </html>
 <script src="/js/snapVote.js"></script>
