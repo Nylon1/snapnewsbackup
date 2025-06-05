@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
               highlight(buttons, voteType);
               fetchVotes(videoId, container);
 
-              // ✅ Show vote message inside the handler
+              // ✅ Message inside same scope
               const msg = document.createElement('div');
               msg.textContent = 'Vote submitted!';
               msg.style.color = '#ffd900';
