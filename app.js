@@ -5,7 +5,7 @@ const path = require('path');
 const mongoose = require('mongoose');
 const mediacmsRoutes = require('./routes/mediacms');
 const feedRoute = require('./routes/feedRoute'); 
-const voteRoutes = require('./routes/voteRoutes'); // or './server/routes/voteRoutes'
+
 
 
 require('dotenv').config();
@@ -22,7 +22,7 @@ app.use(cors({
 }));
 
 // 2. Allow form submissions (important for file uploads)
-app.use('/api/votes', voteRoutes);
+
 app.use(express.urlencoded({ extended: true }));
 
 // 3. EJS and static files
