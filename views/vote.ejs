@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Vote on Video - SnapNews</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="/styles/vote.css">
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #111;
+      color: #fff;
+      padding: 2rem;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+    .vote-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    .snap-vote-btn {
+      background: #1c1c1c;
+      color: #fff;
+      padding: 0.8rem 1.4rem;
+      border: 1px solid #555;
+      border-radius: 8px;
+      cursor: pointer;
+      flex: 1 1 45%;
+      transition: all 0.3s ease;
+    }
+    .snap-vote-btn:hover {
+      background: #333;
+    }
+    .snap-vote-btn.voted {
+      background-color: #ffd700;
+      color: #000;
+      border-color: #ffd700;
+    }
+    .vote-results div {
+      margin-bottom: 1.2rem;
+    }
+    .bar-container {
+      background: #333;
+      height: 6px;
+      width: 100%;
+      border-radius: 4px;
+      margin-top: 4px;
+    }
+    .bar {
+      height: 6px;
+      background: #ffd700;
+      border-radius: 4px;
+      width: 0%;
+      transition: width 0.5s ease;
+    }
+    .vote-label {
+      font-size: 0.9rem;
+      color: #aaa;
+    }
+  </style>
+</head>
+<body data-videoid="<%= videoId %>">
+  <h1>Vote on this video</h1>
+
+  <div class="vote-buttons">
+    <button class="snap-vote-btn" data-vote="verified">✅ Verified</button>
+    <button class="snap-vote-btn" data-vote="fake">⚠️ Fake</button>
+    <button class="snap-vote-btn" data-vote="satire">🎭 Satire</button>
+    <button class="snap-vote-btn" data-vote="context">❓ Needs Context</button>
+  </div>
+
+  <div class="vote-results">
+    <div>
+      ✅ Verified <span class="vote-label vote-label-verified">0%</span>
+      <div class="bar-container"><div class="vote-bar-verified bar"></div></div>
+    </div>
+    <div>
+      ⚠️ Fake <span class="vote-label vote-label-fake">0%</span>
+      <div class="bar-container"><div class="vote-bar-fake bar"></div></div>
+    </div>
+    <div>
+      🎭 Satire <span class="vote-label vote-label-satire">0%</span>
+      <div class="bar-container"><div class="vote-bar-satire bar"></div></div>
+    </div>
+    <div>
+      ❓ Needs Context <span class="vote-label vote-label-context">0%</span>
+      <div class="bar-container"><div class="vote-bar-context bar"></div></div>
+    </div>
+  </div>
+
+  <script src="/js/snapVote.js"></script>
+</body>
+</html>
