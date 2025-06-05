@@ -237,6 +237,69 @@
       h1 { font-size: 1.05rem; }
       footer { font-size: 1rem;}
     }
+.snap-vote-card {
+  width: 100%;
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.vote-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.6rem;
+  margin: 0.7rem auto 1.2rem auto;
+}
+
+.snap-vote-btn {
+  background: #1c1c1c;
+  border: 2px solid #ffd900;
+  color: #fff;
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.snap-vote-btn:hover {
+  background: #ffd900;
+  color: #000;
+}
+
+.snap-vote-btn.voted {
+  background: #ffd900;
+  color: #000;
+  font-weight: bold;
+}
+
+.vote-results div {
+  margin: 0.5rem auto;
+  width: 90%;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #fff;
+}
+
+.bar-container {
+  flex-grow: 1;
+  background: #333;
+  height: 6px;
+  margin: 0 0.6rem;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.bar {
+  height: 6px;
+  background: #ffd900;
+  width: 0%;
+  transition: width 0.4s ease;
+  border-radius: 5px;
+}
+
   </style>
 </head>
 <body>
@@ -282,6 +345,8 @@ const videoPageUrl = snapshnapBase + "/watch/" + video.friendly_token;
             <span class="copied-message" id="copied-<%= idx %>" style="opacity:0;">Copied!</span>
           </div>
 <div class="snap-vote-card" data-videoid="<%= video.friendly_token %>">
+  <h4 style="margin-top: 1rem; color: #ffd900;">Community Verdict</h4>
+
   <div class="vote-buttons">
     <button class="snap-vote-btn" data-vote="verified">✅ Verified</button>
     <button class="snap-vote-btn" data-vote="fake">⚠️ Fake</button>
@@ -290,20 +355,21 @@ const videoPageUrl = snapshnapBase + "/watch/" + video.friendly_token;
   </div>
 
   <div class="vote-results">
-    <div>✅ Verified <span class="vote-label-verified">0%</span>
+    <div>Verified <span class="vote-label-verified">0%</span>
       <div class="bar-container"><div class="vote-bar-verified bar"></div></div>
     </div>
-    <div>⚠️ Fake <span class="vote-label-fake">0%</span>
+    <div>Fake <span class="vote-label-fake">0%</span>
       <div class="bar-container"><div class="vote-bar-fake bar"></div></div>
     </div>
-    <div>🎭 Satire <span class="vote-label-satire">0%</span>
+    <div>Satire <span class="vote-label-satire">0%</span>
       <div class="bar-container"><div class="vote-bar-satire bar"></div></div>
     </div>
-    <div>❓ Context <span class="vote-label-context">0%</span>
+    <div>Context Needed <span class="vote-label-context">0%</span>
       <div class="bar-container"><div class="vote-bar-context bar"></div></div>
     </div>
   </div>
 </div>
+
         </div>
       <% }); %>
     <% } %>
