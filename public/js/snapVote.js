@@ -5,11 +5,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const existingVote = localStorage.getItem(voteStorageKey);
     const buttons = container.querySelectorAll('.snap-vote-btn');
 
-    if (existingVote) highlight(buttons, existingVote);
-    else {
+    if (existingVote) {
+      highlight(buttons, existingVote);
+    } else {
       buttons.forEach(btn => {
         btn.addEventListener('click', () => {
           const voteType = btn.dataset.vote;
+
           fetch('https://snapbackend-new.onrender.com/api/votes', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -19,6 +21,16 @@ document.addEventListener('DOMContentLoaded', () => {
               localStorage.setItem(voteStorageKey, voteType);
               highlight(buttons, voteType);
               fetchVotes(videoId, container);
+
+              // ✅ Show vote message inside the handler
+              const msg = document.createElement('div');
+              msg.textContent = 'Vote submitted!';
+              msg.style.color = '#ffd900';
+              msg.style.marginTop = '0.5rem';
+              msg.style.fontWeight = 'bold';
+              msg.style.fontSize = '0.95rem';
+              container.appendChild(msg);
+              setTimeout(() => msg.remove(), 1500);
             }
           });
         });
@@ -47,11 +59,3 @@ function fetchVotes(videoId, container) {
       });
     });
 }
-const msg = document.createElement('div');
-msg.textContent = 'Vote submitted!';
-msg.style.color = '#ffd900';
-msg.style.marginTop = '0.5rem';
-msg.style.fontWeight = 'bold';
-msg.style.fontSize = '0.95rem';
-container.appendChild(msg);
-setTimeout(() => msg.remove(), 1500);
