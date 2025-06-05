@@ -8,6 +8,8 @@ const session      = require('express-session');
 const path         = require('path');
 const fs           = require('fs');
 const fileUpload   = require('express-fileupload');
+const voteRoutes = require('./routes/voteRoutes'); // or './server/routes/voteRoutes'
+
 
 const app = express();
 
@@ -16,6 +18,7 @@ app.set('views', path.join(__dirname, '../views'));
 app.set('view engine', 'ejs');
 
 // === Middleware ===
+app.use('/api/votes', voteRoutes);
 app.use(fileUpload()); // for req.files
 app.use(cors({
   origin: [
