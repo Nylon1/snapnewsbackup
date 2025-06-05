@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.snap-vote-card').forEach(container => {
-    const videoId = container.dataset.videoid;
+    const videoIds = container.dataset.videoid;
     const voteStorageKey = `snapvote-${videoId}`;
     const existingVote = localStorage.getItem(voteStorageKey);
     const buttons = container.querySelectorAll('.snap-vote-btn');
@@ -10,17 +10,19 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
       buttons.forEach(btn => {
         btn.addEventListener('click', () => {
-          const voteType = btn.dataset.vote;
+      const voteType = btn.dataset.vote;
 
-          fetch('https://snapbackend-new.onrender.com/api/votes', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ videoId, voteType })
-          }).then(res => {
-            if (res.status === 201) {
-              localStorage.setItem(voteStorageKey, voteType);
-              highlight(buttons, voteType);
-              fetchVotes(videoId, container);
+fetch('https://snapbackend-new.onrender.com/api/votes', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ videoId, voteType })  // ✅ FIXED
+}).then(res => {
+  if (res.status === 201) {
+    localStorage.setItem(voteStorageKey, voteType);
+    highlight(buttons, voteType);
+    fetchVotes(videoId, container);
+  }
+});
 
               // ✅ Message inside same scope
               const msg = document.createElement('div');
