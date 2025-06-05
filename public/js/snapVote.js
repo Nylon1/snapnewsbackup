@@ -12,7 +12,8 @@ document.addEventListener('DOMContentLoaded', () => {
         btn.addEventListener('click', () => {
       const voteType = btn.dataset.vote;
 
-fetch('https://snapbackend-new.onrender.com/api/votes', {
+fetch(`https://snapbackend-new.onrender.com/api/votes/${videoId}`)
+
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify({ videoId, voteType })  // ✅ FIXED
