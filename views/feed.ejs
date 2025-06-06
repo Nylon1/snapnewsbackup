@@ -346,13 +346,16 @@ const videoPageUrl = snapshnapBase + "/watch/" + video.friendly_token;
           </div>
 <div class="snap-vote-card" data-videoid="<%= video._id %>">
   <h4 style="margin-top: 1rem; color: #ffd900;">Community Verdict</h4>
-
-<div class="card-actions">
-  <button class="vote-button" data-id="<%= video.friendly_token %>" data-type="verified">Verified</button>
-  <button class="vote-button" data-id="<%= video.friendly_token %>" data-type="fake">Fake</button>
-  <button class="vote-button" data-id="<%= video.friendly_token %>" data-type="satire">Satire</button>
-  <button class="vote-button" data-id="<%= video.friendly_token %>" data-type="context">Needs Context</button>
+<div class="snap-vote-card" data-videoid="<%= video.friendly_token %>">
+  <h4 style="margin-top: 1rem; color: #ffd900;">Community Verdict</h4>
+  <div class="card-actions">
+    <button class="vote-button" data-type="verified">Verified</button>
+    <button class="vote-button" data-type="fake">Fake</button>
+    <button class="vote-button" data-type="satire">Satire</button>
+    <button class="vote-button" data-type="context">Needs Context</button>
+  </div>
 </div>
+
 
 
   <div class="vote-results">
