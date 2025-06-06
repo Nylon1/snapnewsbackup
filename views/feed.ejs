@@ -281,6 +281,30 @@ const videoPageUrl = snapshnapBase + "/watch/" + video.friendly_token;
             </button>
             <span class="copied-message" id="copied-<%= idx %>" style="opacity:0;">Copied!</span>
           </div>
+<div class="snap-vote-card" data-videoid="<%= video.friendly_token %>">
+  <div class="vote-buttons">
+    <button class="snap-vote-btn" data-vote="verified">✅ Verified</button>
+    <button class="snap-vote-btn" data-vote="fake">⚠️ Fake</button>
+    <button class="snap-vote-btn" data-vote="satire">🎭 Satire</button>
+    <button class="snap-vote-btn" data-vote="context">❓ Context Needed</button>
+  </div>
+
+  <div class="vote-results">
+    <div>✅ Verified <span class="vote-label-verified">0%</span>
+      <div class="bar-container"><div class="vote-bar-verified bar"></div></div>
+    </div>
+    <div>⚠️ Fake <span class="vote-label-fake">0%</span>
+      <div class="bar-container"><div class="vote-bar-fake bar"></div></div>
+    </div>
+    <div>🎭 Satire <span class="vote-label-satire">0%</span>
+      <div class="bar-container"><div class="vote-bar-satire bar"></div></div>
+    </div>
+    <div>❓ Context <span class="vote-label-context">0%</span>
+      <div class="bar-container"><div class="vote-bar-context bar"></div></div>
+    </div>
+  </div>
+</div>
+
         </div>
       <% }); %>
     <% } %>
@@ -327,7 +351,8 @@ document.querySelectorAll('.share-btn').forEach(function(btn) {
   });
 });
 
-  </script>
+ <script src="/js/snapVote.js"></script>
+
 </body>
 </html>
 
