@@ -1,82 +1,81 @@
-document.addEventListener('DOMContentLoaded', () => {
-  document.querySelectorAll('.snap-vote-card').forEach(container => {
-    const videoId = container.dataset.videoid;
-    const voteStorageKey = `snapvote-${videoId}`;
-    const existingVote = localStorage.getItem(voteStorageKey);
-    const buttons = container.querySelectorAll('.snap-vote-btn');
+// -----------------
+// Timer Countdown
+// -----------------
+function updateTimers() {
+  document.querySelectorAll('.video-card').forEach(function(card, idx) {
+    const dateStr = card.getAttribute('data-date');
+    const created = new Date(dateStr);
+    const now = new Date();
+    const msElapsed = now - created;
+    const msLeft = 24 * 60 * 60 * 1000 - msElapsed;
+    const timer = document.getElementById('timer-' + idx);
 
-    if (existingVote) {
-      highlight(buttons, existingVote);
+    if (msLeft > 0) {
+      const h = Math.floor(msLeft / (1000 * 60 * 60));
+      const m = Math.floor((msLeft % (1000 * 60 * 60)) / (1000 * 60));
+      const s = Math.floor((msLeft % (1000 * 60)) / 1000);
+      timer.textContent = `Expires in: ${h.toString().padStart(2, '0')}:${m
+        .toString()
+        .padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+    } else {
+      timer.textContent = 'Expired';
     }
+  });
+}
 
-    buttons.forEach(btn => {
-      btn.addEventListener('click', () => {
-        const voteType = btn.dataset.vote;
+setInterval(updateTimers, 1000);
+updateTimers();
 
-        // Prevent double voting
-        if (localStorage.getItem(voteStorageKey)) {
-          showMsg(container, 'You already voted.', '#ccc');
-          return;
-        }
-
-        fetch('https://snapbackend-new.onrender.com/api/votes', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ videoId, voteType })
-        })
-        .then(res => {
-          if (!res.ok) throw new Error(`Vote failed: ${res.status}`);
-          return res.json();
-        })
-        .then(() => {
-          localStorage.setItem(voteStorageKey, voteType);
-          highlight(buttons, voteType);
-          fetchVotes(videoId, container);
-          showMsg(container, '✅ Vote submitted!', '#ffd900');
-        })
-        .catch(err => {
-          console.error('Vote error:', err);
-          showMsg(container, '❌ Error submitting vote.', 'red');
-        });
-      });
+// -----------------
+// Share Button
+// -----------------
+document.querySelectorAll('.share-btn').forEach(btn => {
+  btn.addEventListener('click', function () {
+    const url = window.location.origin + btn.getAttribute('data-path');
+    navigator.clipboard.writeText(url).then(() => {
+      const idx = btn.getAttribute('data-idx');
+      const msg = document.getElementById('copied-' + idx);
+      msg.style.opacity = 1;
+      setTimeout(() => {
+        msg.style.opacity = 0;
+      }, 1800);
     });
-
-    fetchVotes(videoId, container);
   });
 });
 
-function highlight(buttons, selected) {
-  buttons.forEach(btn => {
-    btn.classList.toggle('voted', btn.dataset.vote === selected);
-  });
-}
+// -----------------
+// Voting Logic
+// -----------------
+document.querySelectorAll('.vote-button').forEach(btn => {
+  btn.addEventListener('click', async () => {
+    const videoId = btn.getAttribute('data-id');
+    const voteType = btn.getAttribute('data-type');
 
-function fetchVotes(videoId, container) {
-  fetch(`https://snapbackend-new.onrender.com/api/votes/${videoId}`)
-    .then(res => {
-      if (!res.ok) throw new Error(`Fetch failed: ${res.status}`);
-      return res.json();
-    })
-    .then(data => {
-      const total = Object.values(data).reduce((a, b) => a + b, 0);
-      Object.entries(data).forEach(([key, count]) => {
-        const percent = total ? ((count / total) * 100).toFixed(1) : 0;
-        container.querySelector(`.vote-label-${key}`).textContent = `${percent}%`;
-        container.querySelector(`.vote-bar-${key}`).style.width = `${percent}%`;
+    if (!videoId || !voteType) {
+      alert('Missing vote info.');
+      return;
+    }
+
+    try {
+      const res = await fetch('https://snapbackend-new.onrender.com/api/votes', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ videoId, voteType })
       });
-    })
-    .catch(err => {
-      console.error(`Fetch error for video ${videoId}:`, err);
-    });
-}
 
-function showMsg(container, text, color = '#ffd900') {
-  const msg = document.createElement('div');
-  msg.textContent = text;
-  msg.style.color = color;
-  msg.style.marginTop = '0.4rem';
-  msg.style.fontWeight = 'bold';
-  msg.style.fontSize = '0.92rem';
-  container.appendChild(msg);
-  setTimeout(() => msg.remove(), 1800);
-}
+      const data = await res.json();
+
+      if (res.ok) {
+        alert(`You voted: ${voteType}`);
+        // Optionally: Update UI here with the vote result
+      } else {
+        alert(data.message || 'Vote failed.');
+      }
+    } catch (err) {
+      alert('Vote failed. Check connection.');
+      console.error(err);
+    }
+  });
+});
