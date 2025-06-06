@@ -327,43 +327,7 @@ document.querySelectorAll('.share-btn').forEach(function(btn) {
   });
 });
 
-          <!-- ────────── COMMUNITY VERDICT (VOTING) ────────── -->
-          <div class="snap-vote-card" data-videoid="<%= videoId %>">
-            <h4 style="margin-top: 1rem; color: #ffd900;">Community Verdict</h4>
-            <div class="card-actions">
-              <button class="vote-button" data-type="verified">Verified</button>
-              <button class="vote-button" data-type="fake">Fake</button>
-              <button class="vote-button" data-type="satire">Satire</button>
-              <button class="vote-button" data-type="context">Needs Context</button>
-            </div>
-            <div class="vote-results">
-              <div>Verified <span class="vote-label-verified">0%</span>
-                <div class="bar-container"><div class="vote-bar-verified bar"></div></div>
-              </div>
-              <div>Fake <span class="vote-label-fake">0%</span>
-                <div class="bar-container"><div class="vote-bar-fake bar"></div></div>
-              </div>
-              <div>Satire <span class="vote-label-satire">0%</span>
-                <div class="bar-container"><div class="vote-bar-satire bar"></div></div>
-              </div>
-              <div>Context Needed <span class="vote-label-context">0%</span>
-                <div class="bar-container"><div class="vote-bar-context bar"></div></div>
-              </div>
-            </div>
-          </div>
-          <!-- ────────── COMMUNITY VERDICT END ────────── -->
-
-        </div>
-        <!-- ──────────── VIDEO CARD END ──────────── -->
-      <% }); %>
-    <% } %>
-  </div> <!-- end #feed -->
-
-  <footer>
-    &copy; <%= new Date().getFullYear() %> SnapNews &middot; All rights reserved.
-  </footer>
-
-  <!-- ─────────── Load Voting Script ─────────── -->
-  <script src="/js/snapVote.js"></script>
+  </script>
 </body>
 </html>
+
