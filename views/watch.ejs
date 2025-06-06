@@ -121,87 +121,75 @@
       </div>
       <!-- ───────── End Share Button ───────── -->
 
-        <!-- ────────── COMMUNITY VERDICT (VOTING) ────────── -->
-          <div class="snap-vote-card" data-videoid="<%= video.friendly_token %>">
-            <h4 style="margin-top: 1rem; color: #ffd900;">Community Verdict</h4>
-            <div class="vote-buttons">
-              <button class="snap-vote-btn" data-vote="verified">✅ Verified</button>
-              <button class="snap-vote-btn" data-vote="fake">⚠️ Fake</button>
-              <button class="snap-vote-btn" data-vote="satire">🎭 Satire</button>
-              <button class="snap-vote-btn" data-vote="context">❓ Context Needed</button>
-            </div>
-            <div class="vote-results">
-              <div>✅ Verified <span class="vote-label-verified">0%</span>
-                <div class="bar-container"><div class="vote-bar-verified bar"></div></div>
-              </div>
-              <div>⚠️ Fake <span class="vote-label-fake">0%</span>
-                <div class="bar-container"><div class="vote-bar-fake bar"></div></div>
-              </div>
-              <div>🎭 Satire <span class="vote-label-satire">0%</span>
-                <div class="bar-container"><div class="vote-bar-satire bar"></div></div>
-              </div>
-              <div>❓ Context <span class="vote-label-context">0%</span>
-                <div class="bar-container"><div class="vote-bar-context bar"></div></div>
-              </div>
+      <!-- ───────── Community Verdict (Voting) ───────── -->
+      <div 
+        class="snap-vote-card card-3d bg-gray-900 rounded-lg p-4 animate-glow-yellow"
+        data-videoid="<%= videoId %>">
+        <h4 class="text-xl font-semibold text-yellow-400 mb-3">Community Verdict</h4>
+        <div class="vote-buttons flex flex-wrap justify-center gap-3 mb-4">
+          <button class="snap-vote-btn bg-yellow-400 text-black font-semibold px-4 py-2 rounded hover:bg-yellow-300 transition"
+                  data-vote="verified">
+            ✅ Verified
+          </button>
+          <button class="snap-vote-btn bg-yellow-400 text-black font-semibold px-4 py-2 rounded hover:bg-yellow-300 transition"
+                  data-vote="fake">
+            ⚠️ Fake
+          </button>
+          <button class="snap-vote-btn bg-yellow-400 text-black font-semibold px-4 py-2 rounded hover:bg-yellow-300 transition"
+                  data-vote="satire">
+            🎭 Satire
+          </button>
+          <button class="snap-vote-btn bg-yellow-400 text-black font-semibold px-4 py-2 rounded hover:bg-yellow-300 transition"
+                  data-vote="context">
+            ❓ Context Needed
+          </button>
+        </div>
+        <div class="vote-results space-y-2">
+          <div class="flex items-center text-gray-200">
+            <span>✅ Verified <span class="vote-label-verified">0%</span></span>
+            <div class="bar-container flex-1 bg-gray-700 h-2 mx-3 rounded">
+              <div class="vote-bar-verified bar bg-yellow-400 h-full rounded"></div>
             </div>
           </div>
-          <!-- ────────── COMMUNITY VERDICT END ────────── -->
-
+          <div class="flex items-center text-gray-200">
+            <span>⚠️ Fake <span class="vote-label-fake">0%</span></span>
+            <div class="bar-container flex-1 bg-gray-700 h-2 mx-3 rounded">
+              <div class="vote-bar-fake bar bg-yellow-400 h-full rounded"></div>
+            </div>
+          </div>
+          <div class="flex items-center text-gray-200">
+            <span>🎭 Satire <span class="vote-label-satire">0%</span></span>
+            <div class="bar-container flex-1 bg-gray-700 h-2 mx-3 rounded">
+              <div class="vote-bar-satire bar bg-yellow-400 h-full rounded"></div>
+            </div>
+          </div>
+          <div class="flex items-center text-gray-200">
+            <span>❓ Context <span class="vote-label-context">0%</span></span>
+            <div class="bar-container flex-1 bg-gray-700 h-2 mx-3 rounded">
+              <div class="vote-bar-context bar bg-yellow-400 h-full rounded"></div>
+            </div>
+          </div>
         </div>
-      <% }); %>
-    <% } %>
-  </div> <!-- end #feed -->
+      </div>
+      <!-- ───────── End Community Verdict ───────── -->
 
-  <footer>
-    &copy; <%= new Date().getFullYear() %> SnapNews &middot; All rights reserved.
-  </footer>
+    </div>
 
-  <!-- ─────────── Timer + Share Script ─────────── -->
-  <script>
-    // Update countdown timers every second
-    function updateTimers() {
-      document.querySelectorAll('.video-card').forEach(function(card, idx) {
-        var dateStr = card.getAttribute('data-date');
-        var created = new Date(dateStr);
-        var now = new Date();
-        var msElapsed = now - created;
-        var msLeft = 24 * 60 * 60 * 1000 - msElapsed;
-        var timer = document.getElementById('timer-' + idx);
+    <!-- Include snapVote.js to handle voting -->
+    <script src="/js/snapVote.js"></script>
 
-        if (msLeft > 0) {
-          var h = Math.floor(msLeft / (1000 * 60 * 60));
-          var m = Math.floor((msLeft % (1000 * 60 * 60)) / (1000 * 60));
-          var s = Math.floor((msLeft % (1000 * 60)) / 1000);
-          timer.textContent = "Expires in: " +
-            (h < 10 ? "0" : "") + h + ":" +
-            (m < 10 ? "0" : "") + m + ":" +
-            (s < 10 ? "0" : "") + s;
-        } else {
-          timer.textContent = "Expired";
-        }
-      });
-    }
-    setInterval(updateTimers, 1000);
-    updateTimers();
-
-    // Share button logic
-    document.querySelectorAll('.share-btn').forEach(function(btn) {
-      btn.addEventListener('click', function() {
-        var url = window.location.origin + btn.getAttribute('data-path');
-        navigator.clipboard.writeText(url).then(function() {
-          var idx = btn.getAttribute('data-idx');
-          var msg = document.getElementById('copied-' + idx);
+    <!-- Share Button Script -->
+    <script>
+      document.getElementById('share-watch-btn').addEventListener('click', () => {
+        const url = window.location.href;
+        navigator.clipboard.writeText(url).then(() => {
+          const msg = document.getElementById('share-msg');
           msg.style.opacity = 1;
-          setTimeout(function() { msg.style.opacity = 0; }, 1800);
+          setTimeout(() => { msg.style.opacity = 0; }, 1800);
         });
       });
-    });
-  </script>
-
-  <!-- ─────────── COMMUNITY‐VOTE HANDLER ─────────── -->
-
-  <!-- ───────── END COMMUNITY‐VOTE HANDLER ───────── -->
+    </script>
 <script src="/js/snapVote.js"></script>
-</body>
+  </body>
 </html>
 
