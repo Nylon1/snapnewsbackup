@@ -76,3 +76,24 @@ function showMsg(container, msgText, color) {
   setTimeout(() => msg.remove(), 1600);
 }
 
+// public/js/snapVote.js
+console.log('🔵 snapVote.js loaded');
+
+document.addEventListener('DOMContentLoaded', () => {
+  console.log('🔵 DOMContentLoaded in snapVote.js');
+
+  document.querySelectorAll('.snap-vote-card').forEach(voteCard => {
+    const videoId = voteCard.getAttribute('data-videoid');
+    console.log('  Found voteCard for videoId=', videoId);
+
+    const buttons = voteCard.querySelectorAll('.snap-vote-btn');
+    buttons.forEach(btn => {
+      console.log('    Attaching click listener to button with data-vote=', btn.getAttribute('data-vote'));
+      btn.addEventListener('click', () => {
+        console.log(`    🔵 Clicked vote button: videoId=${videoId}, vote=${btn.getAttribute('data-vote')}`);
+        // … your POST‐then‐re‐GET logic here …
+      });
+    });
+  });
+});
+
