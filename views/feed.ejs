@@ -444,7 +444,7 @@
           // Disable all buttons while request is in flight
           buttons.forEach(b => b.disabled = true);
 
-          fetch('/api/vote', {
+          fetch('/api/votes', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ videoId, vote: voteType })
