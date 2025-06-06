@@ -10,7 +10,6 @@
       const MEDIA_BASE = 'https://mediacms-cw-u46015.vm.elestio.app';
 
       // Pick the 720p encoding (highest quality available)
-      // video.encodings_info["720"].h264.url is a relative path like "/media/encoded/...720.mp4.mp4"
       const enc720 = video.encodings_info?.["720"]?.h264?.url || "";
 
       // Build the full HTTPS MP4 link
@@ -26,7 +25,7 @@
 
     <!-- Open Graph tags -->
     <meta property="og:type"        content="video.other" />
-    <meta property="og:url"         content="https://snapshsnap.com/watch/<%= video.friendly_token %>" />
+    <meta property="og:url"         content="https://snapshnap.com/watch/<%= video.friendly_token %>" />
     <meta property="og:title"       content="<%= video.title %>" />
     <meta property="og:description" content="<%= video.description || 'Watch and share news on SnapShnap.' %>" />
     <meta property="og:image"       content="<%= ogImage %>" />
@@ -36,7 +35,7 @@
     <meta property="og:video:width"      content="640" />
     <meta property="og:video:height"     content="360" />
 
-    <!-- Twitter Card tags (optional) -->
+    <!-- Twitter Card tags -->
     <meta name="twitter:card"        content="player" />
     <meta name="twitter:title"       content="<%= video.title %>" />
     <meta name="twitter:description" content="<%= video.description || 'Watch and share news on SnapShsnap.' %>" />
@@ -46,27 +45,47 @@
     <meta name="twitter:player:height" content="360" />
 
     <style>
+      /* ─────────── 3D and Glow Keyframes ─────────── */
       @keyframes glow {
-        0%, 100% { opacity: 0.72; filter: blur(16px); }
-        50%      { opacity: 1;    filter: blur(32px); }
+        0%, 100% { box-shadow: 0 0 16px 4px rgba(255,217,0,0.5); }
+        50%      { box-shadow: 0 0 32px 8px rgba(255,217,0,0.85); }
       }
-      .animate-glow { animation: glow 2.8s infinite alternate cubic-bezier(.4,2.2,.3,1); }
-      @keyframes cardpop {
-        0%   { transform: scale(1); }
-        50%  { transform: scale(1.025); }
-        100% { transform: scale(1); }
+
+      /* Apply a pulsing yellow glow */
+      .animate-glow-yellow {
+        animation: glow 2.8s infinite alternate cubic-bezier(.4,2.2,.3,1);
       }
-      .animate-glow-card { animation: cardpop 2.8s infinite alternate cubic-bezier(.4,2.2,.3,1); }
+
+      /* 3D card effect on hover */
+      .card-3d {
+        perspective: 1000px;
+        transform-style: preserve-3d;
+        transition: transform 0.4s ease, box-shadow 0.4s ease;
+      }
+      .card-3d:hover {
+        transform: perspective(1000px) rotateX(3deg) rotateY(-3deg) scale(1.02);
+      }
     </style>
   </head>
 
-  <body class="bg-black text-white min-h-screen flex flex-col items-center justify-center">
+  <body class="bg-black text-white min-h-screen flex flex-col items-center">
 
-    <div class="w-full max-w-xl bg-gray-900 rounded-lg shadow-lg p-8 mt-10">
+    <!-- ───────── Top Bar ───────── -->
+    <div class="w-full max-w-3xl bg-gray-900 rounded-b-2xl shadow-md p-4 flex justify-between items-center mt-6">
+      <a href="/feed"
+         class="text-yellow-400 font-semibold px-3 py-1 bg-gray-800 rounded hover:bg-gray-700 transition">
+        ← Back to Feed
+      </a>
+      <div class="text-xl font-bold text-yellow-400">SnapShnap</div>
+      <div class="w-12"></div> <!-- placeholder for symmetry -->
+    </div>
+    <!-- ───────── End Top Bar ───────── -->
+
+    <div class="w-full max-w-xl bg-gray-800 rounded-lg shadow-lg p-6 mt-8 mb-12">
       <!-- Video Player -->
-      <div class="mb-5">
+      <div class="mb-6">
         <video 
-          class="w-full rounded shadow-lg"
+          class="w-full rounded-lg shadow-lg"
           controls
           autoplay
           poster="<%= ogImage %>">
@@ -76,7 +95,7 @@
       </div>
 
       <!-- Title and Upload Info -->
-      <h2 class="text-xl font-bold text-yellow-400 mb-1"><%= video.title %></h2>
+      <h2 class="text-2xl font-bold text-yellow-400 mb-1"><%= video.title %></h2>
       <div class="text-gray-300 text-sm mb-4">
         Uploaded by 
         <span class="font-semibold"><%= video.user.username %></span>
@@ -90,15 +109,86 @@
       <% } %>
 
       <!-- Hashtag -->
-      <div class="text-xs text-yellow-400 mb-4">#snapnews</div>
+      <div class="text-xs text-yellow-400 mb-6">#snapnews</div>
 
-      <!-- Back to Feed Link -->
-      <a href="/feed"
-         class="bg-yellow-400 text-black px-4 py-2 rounded font-semibold hover:bg-yellow-300 transition">
-        ← Back to Feed
-      </a>
+      <!-- ───────── Share Button ───────── -->
+      <div class="text-center mb-8">
+        <button id="share-watch-btn"
+                class="bg-yellow-400 text-black font-semibold px-4 py-2 rounded hover:bg-yellow-300 transition">
+          🔗 Copy Link
+        </button>
+        <span id="share-msg" class="text-yellow-400 ml-3 opacity-0">Copied!</span>
+      </div>
+      <!-- ───────── End Share Button ───────── -->
+
+      <!-- ───────── Community Verdict (Voting) ───────── -->
+      <div 
+        class="snap-vote-card card-3d bg-gray-900 rounded-lg p-4 animate-glow-yellow"
+        data-videoid="<%= video.friendly_token %>">
+        <h4 class="text-xl font-semibold text-yellow-400 mb-3">Community Verdict</h4>
+        <div class="vote-buttons flex flex-wrap justify-center gap-3 mb-4">
+          <button class="snap-vote-btn bg-yellow-400 text-black font-semibold px-4 py-2 rounded hover:bg-yellow-300 transition"
+                  data-vote="verified">
+            ✅ Verified
+          </button>
+          <button class="snap-vote-btn bg-yellow-400 text-black font-semibold px-4 py-2 rounded hover:bg-yellow-300 transition"
+                  data-vote="fake">
+            ⚠️ Fake
+          </button>
+          <button class="snap-vote-btn bg-yellow-400 text-black font-semibold px-4 py-2 rounded hover:bg-yellow-300 transition"
+                  data-vote="satire">
+            🎭 Satire
+          </button>
+          <button class="snap-vote-btn bg-yellow-400 text-black font-semibold px-4 py-2 rounded hover:bg-yellow-300 transition"
+                  data-vote="context">
+            ❓ Context Needed
+          </button>
+        </div>
+        <div class="vote-results space-y-2">
+          <div class="flex items-center text-gray-200">
+            <span>✅ Verified <span class="vote-label-verified">0%</span></span>
+            <div class="bar-container flex-1 bg-gray-700 h-2 mx-3 rounded">
+              <div class="vote-bar-verified bar bg-yellow-400 h-full rounded"></div>
+            </div>
+          </div>
+          <div class="flex items-center text-gray-200">
+            <span>⚠️ Fake <span class="vote-label-fake">0%</span></span>
+            <div class="bar-container flex-1 bg-gray-700 h-2 mx-3 rounded">
+              <div class="vote-bar-fake bar bg-yellow-400 h-full rounded"></div>
+            </div>
+          </div>
+          <div class="flex items-center text-gray-200">
+            <span>🎭 Satire <span class="vote-label-satire">0%</span></span>
+            <div class="bar-container flex-1 bg-gray-700 h-2 mx-3 rounded">
+              <div class="vote-bar-satire bar bg-yellow-400 h-full rounded"></div>
+            </div>
+          </div>
+          <div class="flex items-center text-gray-200">
+            <span>❓ Context <span class="vote-label-context">0%</span></span>
+            <div class="bar-container flex-1 bg-gray-700 h-2 mx-3 rounded">
+              <div class="vote-bar-context bar bg-yellow-400 h-full rounded"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- ───────── End Community Verdict ───────── -->
     </div>
 
+    <!-- ───────── Include snapVote.js ───────── -->
+    <script src="/js/snapVote.js"></script>
+
+    <!-- ───────── Share Button Script ───────── -->
+    <script>
+      document.getElementById('share-watch-btn').addEventListener('click', () => {
+        const url = window.location.href;
+        navigator.clipboard.writeText(url).then(() => {
+          const msg = document.getElementById('share-msg');
+          msg.style.opacity = 1;
+          setTimeout(() => { msg.style.opacity = 0; }, 1800);
+        });
+      });
+    </script>
+    <!-- ───────── End Share Button Script ───────── -->
   </body>
 </html>
 
