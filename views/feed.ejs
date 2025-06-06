@@ -237,69 +237,6 @@
       h1 { font-size: 1.05rem; }
       footer { font-size: 1rem;}
     }
-.snap-vote-card {
-  width: 100%;
-  margin-top: 1rem;
-  text-align: center;
-}
-
-.vote-buttons {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.6rem;
-  margin: 0.7rem auto 1.2rem auto;
-}
-
-.snap-vote-btn {
-  background: #1c1c1c;
-  border: 2px solid #ffd900;
-  color: #fff;
-  padding: 0.4rem 0.9rem;
-  border-radius: 999px;
-  font-size: 0.95rem;
-  cursor: pointer;
-  transition: all 0.2s ease-in-out;
-}
-
-.snap-vote-btn:hover {
-  background: #ffd900;
-  color: #000;
-}
-
-.snap-vote-btn.voted {
-  background: #ffd900;
-  color: #000;
-  font-weight: bold;
-}
-
-.vote-results div {
-  margin: 0.5rem auto;
-  width: 90%;
-  font-size: 0.9rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  color: #fff;
-}
-
-.bar-container {
-  flex-grow: 1;
-  background: #333;
-  height: 6px;
-  margin: 0 0.6rem;
-  border-radius: 5px;
-  overflow: hidden;
-}
-
-.bar {
-  height: 6px;
-  background: #ffd900;
-  width: 0%;
-  transition: width 0.4s ease;
-  border-radius: 5px;
-}
-
   </style>
 </head>
 <body>
@@ -320,7 +257,7 @@
 const videoPageUrl = snapshnapBase + "/watch/" + video.friendly_token;
 
         %>
-   <div class="video-card" data-date="<%= video.add_date %>" id="card-<%= idx %>">
+        <div class="video-card" data-date="<%= video.add_date %>" id="card-<%= idx %>">
           <div class="title"><%= video.title || "Untitled" %></div>
           <div class="date">
             Uploaded: <%= new Date(video.add_date).toLocaleString() %>
@@ -389,7 +326,6 @@ document.querySelectorAll('.share-btn').forEach(function(btn) {
     });
   });
 });
-
 
           <!-- ────────── COMMUNITY VERDICT (VOTING) ────────── -->
           <div class="snap-vote-card" data-videoid="<%= videoId %>">
