@@ -196,18 +196,53 @@
       text-align: center;
       margin-top: 1rem;
     }
-    footer {
-      margin-top: auto;
+    .snap-vote-card {
+      width: 100%;
+      margin-top: 1rem;
+      text-align: center;
+    }
+    .vote-buttons button {
+      margin: 0.3rem;
+      padding: 0.5rem 0.8rem;
+      border: none;
+      border-radius: 999px;
+      font-size: 0.95rem;
+      cursor: pointer;
       background: #ffd900;
       color: #191e2c;
-      padding: 1.4rem 0 0.9rem 0;
-      text-align: center;
-      letter-spacing: 1px;
-      font-size: 1.09rem;
-      box-shadow: 0 -2px 24px #ffd90077;
-      border-radius: 1.6rem 1.6rem 0 0;
-      width: 100%;
-      font-weight: bold;
+      font-weight: 600;
+      transition: background 0.2s, transform 0.1s;
+    }
+    .vote-buttons button:disabled {
+      opacity: 0.5;
+      cursor: default;
+    }
+    .vote-results {
+      margin-top: 0.8rem;
+    }
+    .vote-results div {
+      margin: 0.5rem auto;
+      width: 90%;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: #fff;
+    }
+    .bar-container {
+      flex-grow: 1;
+      background: #333;
+      height: 6px;
+      margin: 0 0.6rem;
+      border-radius: 5px;
+      overflow: hidden;
+    }
+    .bar {
+      height: 6px;
+      background: #ffd900;
+      width: 0%;
+      transition: width 0.4s ease;
+      border-radius: 5px;
     }
     @media (max-width: 700px) {
       body {
@@ -229,13 +264,25 @@
         margin-right: auto;
         padding-left: 0.5em;
         padding-right: 0.5em;
-        /* Soft box shadow pop */
         box-shadow: 0 0 40px 10px #ffd90066, 0 2px 20px 4px #191e2c99;
       }
       .topbar { border-radius: 0 0 1.1rem 1.1rem; }
       .topbar .logo, .topbar .home-link { margin: 0 0.6rem; font-size: 1rem;}
       h1 { font-size: 1.05rem; }
       footer { font-size: 1rem;}
+    }
+    footer {
+      margin-top: auto;
+      background: #ffd900;
+      color: #191e2c;
+      padding: 1.4rem 0 0.9rem 0;
+      text-align: center;
+      letter-spacing: 1px;
+      font-size: 1.09rem;
+      box-shadow: 0 -2px 24px #ffd90077;
+      border-radius: 1.6rem 1.6rem 0 0;
+      width: 100%;
+      font-weight: bold;
     }
   </style>
 </head>
@@ -244,7 +291,9 @@
     <a href="/" class="home-link">&larr; Home</a>
     <div class="logo">SnapShnap</div>
   </div>
-  <h1>SnapShnap Feed </h1>
+
+  <h1>SnapShnap Feed</h1>
+
   <div id="feed">
     <% if (error) { %>
       <p><%= error %></p>
@@ -252,82 +301,112 @@
       <p>No videos from the last 24 hours.</p>
     <% } else { %>
       <% videos.forEach(function(video, idx) { %>
-        <%
-        const snapshnapBase = "https://snapshnap.com";
-const videoPageUrl = snapshnapBase + "/watch/" + video.friendly_token;
-
+        <% 
+          const snapshnapBase = "https://snapshnap.com";
+          const videoPageUrl = snapshnapBase + "/watch/" + video.friendly_token;
         %>
         <div class="video-card" data-date="<%= video.add_date %>" id="card-<%= idx %>">
+          
+          <!-- Title -->
           <div class="title"><%= video.title || "Untitled" %></div>
+
+          <!-- Upload date -->
           <div class="date">
             Uploaded: <%= new Date(video.add_date).toLocaleString() %>
           </div>
+
+          <!-- Countdown Timer -->
           <div class="time-remaining" id="timer-<%= idx %>"></div>
+
+          <!-- Video or Thumbnail -->
           <% if (video.file) { %>
-            <video src="<%= video.file %>" controls poster="<%= video.thumbnail_url.startsWith('http') ? video.thumbnail_url : ('https://mediacms-cw-u46015.vm.elestio.app' + video.thumbnail_url) %>"></video>
+            <video
+              src="<%= video.file %>"
+              controls
+              poster="<%= video.thumbnail_url.startsWith('http') ? video.thumbnail_url : ('https://mediacms-cw-u46015.vm.elestio.app' + video.thumbnail_url) %>">
+            </video>
           <% } else { %>
             <a href="<%= videoPageUrl %>" target="_blank">
-              <img src="<%= video.thumbnail_url.startsWith('http') ? video.thumbnail_url : ('https://mediacms-cw-u46015.vm.elestio.app' + video.thumbnail_url) %>" alt="Thumbnail">
+              <img
+                src="<%= video.thumbnail_url.startsWith('http') ? video.thumbnail_url : ('https://mediacms-cw-u46015.vm.elestio.app' + video.thumbnail_url) %>"
+                alt="Thumbnail" />
             </a>
-            <div class="fallback">Direct video unavailable.<br>
-              <a href="<%= videoPageUrl %>" style="color:#ffd900;" target="_blank">Watch on SnapShnap</a>
+            <div class="fallback">
+              Direct video unavailable.<br />
+              <a
+                href="<%= videoPageUrl %>"
+                style="color:#ffd900;"
+                target="_blank">Watch on SnapShnap</a>
             </div>
           <% } %>
-          <div class="card-actions">
-            <button class="share-btn" data-path="/watch/<%= video.friendly_token %>" data-idx="<%= idx %>">
 
-              <svg fill="#191e2c" viewBox="0 0 24 24"><path d="M18 8a3 3 0 1 0-2.83-2H9.83A3 3 0 1 0 9 8h6zm-9 8a3 3 0 1 0 2.83 2h5.34A3 3 0 1 0 15 16H9zm1-7v2h4V9z"/></svg>
+          <!-- Share Button -->
+          <div class="card-actions">
+            <button
+              class="share-btn"
+              data-path="/watch/<%= video.friendly_token %>"
+              data-idx="<%= idx %>">
+              <svg fill="#191e2c" viewBox="0 0 24 24">
+                <path d="M18 8a3 3 0 1 0-2.83-2H9.83A3 3 0 1 0 9 8h6zm-9 8a3 3 0 1 0 2.83 2h5.34A3 3 0 1 0 15 16H9zm1-7v2h4V9z"/>
+              </svg>
               Share
             </button>
             <span class="copied-message" id="copied-<%= idx %>" style="opacity:0;">Copied!</span>
           </div>
-<div class="snap-vote-card" data-videoid="<%= video.friendly_token %>">
-  <div class="vote-buttons">
-    <button class="snap-vote-btn" data-vote="verified">✅ Verified</button>
-    <button class="snap-vote-btn" data-vote="fake">⚠️ Fake</button>
-    <button class="snap-vote-btn" data-vote="satire">🎭 Satire</button>
-    <button class="snap-vote-btn" data-vote="context">❓ Context Needed</button>
-  </div>
 
-  <div class="vote-results">
-    <div>✅ Verified <span class="vote-label-verified">0%</span>
-      <div class="bar-container"><div class="vote-bar-verified bar"></div></div>
-    </div>
-    <div>⚠️ Fake <span class="vote-label-fake">0%</span>
-      <div class="bar-container"><div class="vote-bar-fake bar"></div></div>
-    </div>
-    <div>🎭 Satire <span class="vote-label-satire">0%</span>
-      <div class="bar-container"><div class="vote-bar-satire bar"></div></div>
-    </div>
-    <div>❓ Context <span class="vote-label-context">0%</span>
-      <div class="bar-container"><div class="vote-bar-context bar"></div></div>
-    </div>
-  </div>
-</div>
+          <!-- ────────── COMMUNITY VERDICT (VOTING) ────────── -->
+          <div class="snap-vote-card" data-videoid="<%= video.friendly_token %>">
+            <h4 style="margin-top: 1rem; color: #ffd900;">Community Verdict</h4>
+            <div class="vote-buttons">
+              <button class="snap-vote-btn" data-vote="verified">✅ Verified</button>
+              <button class="snap-vote-btn" data-vote="fake">⚠️ Fake</button>
+              <button class="snap-vote-btn" data-vote="satire">🎭 Satire</button>
+              <button class="snap-vote-btn" data-vote="context">❓ Context Needed</button>
+            </div>
+            <div class="vote-results">
+              <div>✅ Verified <span class="vote-label-verified">0%</span>
+                <div class="bar-container"><div class="vote-bar-verified bar"></div></div>
+              </div>
+              <div>⚠️ Fake <span class="vote-label-fake">0%</span>
+                <div class="bar-container"><div class="vote-bar-fake bar"></div></div>
+              </div>
+              <div>🎭 Satire <span class="vote-label-satire">0%</span>
+                <div class="bar-container"><div class="vote-bar-satire bar"></div></div>
+              </div>
+              <div>❓ Context <span class="vote-label-context">0%</span>
+                <div class="bar-container"><div class="vote-bar-context bar"></div></div>
+              </div>
+            </div>
+          </div>
+          <!-- ────────── COMMUNITY VERDICT END ────────── -->
 
         </div>
       <% }); %>
     <% } %>
-  </div>
+  </div> <!-- end #feed -->
+
   <footer>
     &copy; <%= new Date().getFullYear() %> SnapNews &middot; All rights reserved.
   </footer>
+
+  <!-- ─────────── Timer + Share Script ─────────── -->
   <script>
-    // Timer for time-remaining
+    // Update countdown timers every second
     function updateTimers() {
       document.querySelectorAll('.video-card').forEach(function(card, idx) {
         var dateStr = card.getAttribute('data-date');
         var created = new Date(dateStr);
         var now = new Date();
         var msElapsed = now - created;
-        var msLeft = 24*60*60*1000 - msElapsed;
+        var msLeft = 24 * 60 * 60 * 1000 - msElapsed;
         var timer = document.getElementById('timer-' + idx);
+
         if (msLeft > 0) {
           var h = Math.floor(msLeft / (1000 * 60 * 60));
           var m = Math.floor((msLeft % (1000 * 60 * 60)) / (1000 * 60));
           var s = Math.floor((msLeft % (1000 * 60)) / 1000);
-          timer.textContent = "Expires in: " + 
-            (h < 10 ? "0" : "") + h + ":" + 
+          timer.textContent = "Expires in: " +
+            (h < 10 ? "0" : "") + h + ":" +
             (m < 10 ? "0" : "") + m + ":" +
             (s < 10 ? "0" : "") + s;
         } else {
@@ -338,19 +417,69 @@ const videoPageUrl = snapshnapBase + "/watch/" + video.friendly_token;
     setInterval(updateTimers, 1000);
     updateTimers();
 
- // Share button
-document.querySelectorAll('.share-btn').forEach(function(btn) {
-  btn.addEventListener('click', function() {
-    var url = window.location.origin + btn.getAttribute('data-path');
-    navigator.clipboard.writeText(url).then(function() {
-      var idx = btn.getAttribute('data-idx');
-      var msg = document.getElementById('copied-' + idx);
-      msg.style.opacity = 1;
-      setTimeout(function() { msg.style.opacity = 0; }, 1800);
+    // Share button logic
+    document.querySelectorAll('.share-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var url = window.location.origin + btn.getAttribute('data-path');
+        navigator.clipboard.writeText(url).then(function() {
+          var idx = btn.getAttribute('data-idx');
+          var msg = document.getElementById('copied-' + idx);
+          msg.style.opacity = 1;
+          setTimeout(function() { msg.style.opacity = 0; }, 1800);
+        });
+      });
     });
-  });
-});
-
   </script>
+
+  <!-- ─────────── COMMUNITY‐VOTE HANDLER ─────────── -->
+  <script>
+    document.querySelectorAll('.snap-vote-card').forEach(voteCard => {
+      const videoId = voteCard.getAttribute('data-videoid');
+      const buttons = voteCard.querySelectorAll('.snap-vote-btn');
+
+      buttons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const voteType = btn.getAttribute('data-vote');
+
+          // Disable all buttons while request is in flight
+          buttons.forEach(b => b.disabled = true);
+
+          fetch('/api/vote', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ videoId, vote: voteType })
+          })
+          .then(res => res.json())
+          .then(json => {
+            // Expecting JSON response with percentages:
+            // { verified: 42, fake: 28, satire: 15, context: 15 }
+
+            function updateBar(category, percent) {
+              const barEl   = voteCard.querySelector('.vote-bar-' + category);
+              const labelEl = voteCard.querySelector('.vote-label-' + category);
+              if (!barEl || !labelEl) return;
+              labelEl.textContent = percent + '%';
+              barEl.style.width = percent + '%';
+            }
+
+            updateBar('verified', json.verified);
+            updateBar('fake',     json.fake);
+            updateBar('satire',   json.satire);
+            updateBar('context',  json.context);
+          })
+          .catch(err => {
+            console.error('Vote request failed:', err);
+          })
+          .finally(() => {
+            // Re-enable buttons whether success or failure
+            buttons.forEach(b => b.disabled = false);
+          });
+        });
+      });
+    });
+  </script>
+  <!-- ───────── END COMMUNITY‐VOTE HANDLER ───────── -->
+
 </body>
 </html>
+
