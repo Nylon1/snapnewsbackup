@@ -432,53 +432,7 @@
   </script>
 
   <!-- ─────────── COMMUNITY‐VOTE HANDLER ─────────── -->
-  <script>
-    document.querySelectorAll('.snap-vote-card').forEach(voteCard => {
-      const videoId = voteCard.getAttribute('data-videoid');
-      const buttons = voteCard.querySelectorAll('.snap-vote-btn');
 
-      buttons.forEach(btn => {
-        btn.addEventListener('click', () => {
-          const voteType = btn.getAttribute('data-vote');
-
-          // Disable all buttons while request is in flight
-          buttons.forEach(b => b.disabled = true);
-
-          fetch('https://snapbackend-new.onrender.com/api/votes', {
- {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ videoId, vote: voteType })
-          })
-          .then(res => res.json())
-          .then(json => {
-            // Expecting JSON response with percentages:
-            // { verified: 42, fake: 28, satire: 15, context: 15 }
-
-            function updateBar(category, percent) {
-              const barEl   = voteCard.querySelector('.vote-bar-' + category);
-              const labelEl = voteCard.querySelector('.vote-label-' + category);
-              if (!barEl || !labelEl) return;
-              labelEl.textContent = percent + '%';
-              barEl.style.width = percent + '%';
-            }
-
-            updateBar('verified', json.verified);
-            updateBar('fake',     json.fake);
-            updateBar('satire',   json.satire);
-            updateBar('context',  json.context);
-          })
-          .catch(err => {
-            console.error('Vote request failed:', err);
-          })
-          .finally(() => {
-            // Re-enable buttons whether success or failure
-            buttons.forEach(b => b.disabled = false);
-          });
-        });
-      });
-    });
-  </script>
   <!-- ───────── END COMMUNITY‐VOTE HANDLER ───────── -->
 <script src="/js/snapVote.js"></script>
 </body>
