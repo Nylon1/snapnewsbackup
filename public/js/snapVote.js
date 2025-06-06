@@ -75,38 +75,4 @@ function showMsg(container, msgText, color) {
   container.appendChild(msg);
   setTimeout(() => msg.remove(), 1600);
 }
-document.addEventListener('DOMContentLoaded', () => {
-  document.querySelectorAll('.vote-button').forEach(btn => {
-    btn.addEventListener('click', async () => {
-      const videoId = btn.getAttribute('data-id');
-      const voteType = btn.getAttribute('data-type');
 
-      console.log('🧪 Button clicked:', { videoId, voteType });
-
-      if (!videoId || !voteType) {
-        alert('Missing vote info.');
-        return;
-      }
-
-      try {
-        const res = await fetch('https://snapbackend-new.onrender.com/api/votes', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ videoId, voteType })
-        });
-
-        const data = await res.json();
-        console.log('✅ Vote response:', data);
-
-        if (res.ok) {
-          alert(`You voted: ${voteType}`);
-        } else {
-          alert(data.message || 'Vote failed.');
-        }
-      } catch (err) {
-        console.error('❌ Vote submission error:', err);
-        alert('Vote failed. Check connection.');
-      }
-    });
-  });
-});
