@@ -17,7 +17,7 @@
         ? enc720
         : MEDIA_BASE + enc720;
 
-      // Build the full thumbnail/ poster URL
+      // Build the full thumbnail/poster URL
       const ogImage = video.thumbnail_url.startsWith('http')
         ? video.thumbnail_url
         : MEDIA_BASE + video.thumbnail_url;
@@ -25,7 +25,7 @@
 
     <!-- Open Graph tags -->
     <meta property="og:type"        content="video.other" />
-    <meta property="og:url"         content="https://snapshnap.com/watch/<%= video.friendly_token %>" />
+    <meta property="og:url"         content="https://snapshnap.com/watch/<%= videoId %>" />
     <meta property="og:title"       content="<%= video.title %>" />
     <meta property="og:description" content="<%= video.description || 'Watch and share news on SnapShnap.' %>" />
     <meta property="og:image"       content="<%= ogImage %>" />
@@ -38,7 +38,7 @@
     <!-- Twitter Card tags -->
     <meta name="twitter:card"        content="player" />
     <meta name="twitter:title"       content="<%= video.title %>" />
-    <meta name="twitter:description" content="<%= video.description || 'Watch and share news on SnapShsnap.' %>" />
+    <meta name="twitter:description" content="<%= video.description || 'Watch and share news on SnapShnap.' %>" />
     <meta name="twitter:image"       content="<%= ogImage %>" />
     <meta name="twitter:player"      content="<%= ogVideo %>" />
     <meta name="twitter:player:width"  content="640" />
@@ -67,148 +67,129 @@
       }
     </style>
   </head>
-  <div id="feed">
-    <% if (error) { %>
-      <p><%= error %></p>
-    <% } else if (!videos.length) { %>
-      <p>No videos from the last 24 hours.</p>
-    <% } else { %>
-      <% videos.forEach(function(video, idx) { %>
-        <% 
-          const snapshnapBase = "https://snapshnap.com";
-          const videoPageUrl = snapshnapBase + "/watch/" + video.friendly_token;
-        %>
-        <div class="video-card" data-date="<%= video.add_date %>" id="card-<%= idx %>">
-          
-          <!-- Title -->
-          <div class="title"><%= video.title || "Untitled" %></div>
 
-          <!-- Upload date -->
-          <div class="date">
-            Uploaded: <%= new Date(video.add_date).toLocaleString() %>
-          </div>
+  <body class="bg-black text-white min-h-screen flex flex-col items-center">
 
-          <!-- Countdown Timer -->
-          <div class="time-remaining" id="timer-<%= idx %>"></div>
+    <!-- ───────── Top Bar ───────── -->
+    <div class="w-full max-w-3xl bg-gray-900 rounded-b-2xl shadow-md p-4 flex justify-between items-center mt-6">
+      <a href="/feed"
+         class="text-yellow-400 font-semibold px-3 py-1 bg-gray-800 rounded hover:bg-gray-700 transition">
+        ← Back to Feed
+      </a>
+      <div class="text-xl font-bold text-yellow-400">SnapShnap</div>
+      <div class="w-12"></div> <!-- placeholder for symmetry -->
+    </div>
+    <!-- ───────── End Top Bar ───────── -->
 
-          <!-- Video or Thumbnail -->
-          <% if (video.file) { %>
-            <video
-              src="<%= video.file %>"
-              controls
-              poster="<%= video.thumbnail_url.startsWith('http') ? video.thumbnail_url : ('https://mediacms-cw-u46015.vm.elestio.app' + video.thumbnail_url) %>">
-            </video>
-          <% } else { %>
-            <a href="<%= videoPageUrl %>" target="_blank">
-              <img
-                src="<%= video.thumbnail_url.startsWith('http') ? video.thumbnail_url : ('https://mediacms-cw-u46015.vm.elestio.app' + video.thumbnail_url) %>"
-                alt="Thumbnail" />
-            </a>
-            <div class="fallback">
-              Direct video unavailable.<br />
-              <a
-                href="<%= videoPageUrl %>"
-                style="color:#ffd900;"
-                target="_blank">Watch on SnapShnap</a>
-            </div>
-          <% } %>
+    <div class="w-full max-w-xl bg-gray-800 rounded-lg shadow-lg p-6 mt-8 mb-12">
+      <!-- Video Player -->
+      <div class="mb-6">
+        <video 
+          class="w-full rounded-lg shadow-lg"
+          controls
+          autoplay
+          poster="<%= ogImage %>">
+          <source src="<%= ogVideo %>" type="video/mp4" />
+          Sorry, your browser doesn’t support embedded videos.
+        </video>
+      </div>
 
-          <!-- Share Button -->
-          <div class="card-actions">
-            <button
-              class="share-btn"
-              data-path="/watch/<%= video.friendly_token %>"
-              data-idx="<%= idx %>">
-              <svg fill="#191e2c" viewBox="0 0 24 24">
-                <path d="M18 8a3 3 0 1 0-2.83-2H9.83A3 3 0 1 0 9 8h6zm-9 8a3 3 0 1 0 2.83 2h5.34A3 3 0 1 0 15 16H9zm1-7v2h4V9z"/>
-              </svg>
-              Share
-            </button>
-            <span class="copied-message" id="copied-<%= idx %>" style="opacity:0;">Copied!</span>
-          </div>
+      <!-- Title and Upload Info -->
+      <h2 class="text-2xl font-bold text-yellow-400 mb-1"><%= video.title %></h2>
+      <div class="text-gray-300 text-sm mb-4">
+        Uploaded by 
+        <span class="font-semibold"><%= video.user.username %></span>
+        &middot; 
+        <%= video.add_date ? new Date(video.add_date).toLocaleString() : '' %>
+      </div>
 
-          <!-- ────────── COMMUNITY VERDICT (VOTING) ────────── -->
-          <div class="snap-vote-card" data-videoid="<%= video.friendly_token %>">
-            <h4 style="margin-top: 1rem; color: #ffd900;">Community Verdict</h4>
-            <div class="vote-buttons">
-              <button class="snap-vote-btn" data-vote="verified">✅ Verified</button>
-              <button class="snap-vote-btn" data-vote="fake">⚠️ Fake</button>
-              <button class="snap-vote-btn" data-vote="satire">🎭 Satire</button>
-              <button class="snap-vote-btn" data-vote="context">❓ Context Needed</button>
-            </div>
-            <div class="vote-results">
-              <div>✅ Verified <span class="vote-label-verified">0%</span>
-                <div class="bar-container"><div class="vote-bar-verified bar"></div></div>
-              </div>
-              <div>⚠️ Fake <span class="vote-label-fake">0%</span>
-                <div class="bar-container"><div class="vote-bar-fake bar"></div></div>
-              </div>
-              <div>🎭 Satire <span class="vote-label-satire">0%</span>
-                <div class="bar-container"><div class="vote-bar-satire bar"></div></div>
-              </div>
-              <div>❓ Context <span class="vote-label-context">0%</span>
-                <div class="bar-container"><div class="vote-bar-context bar"></div></div>
-              </div>
-            </div>
-          </div>
-          <!-- ────────── COMMUNITY VERDICT END ────────── -->
+      <!-- Description (if any) -->
+      <% if (video.description) { %>
+        <div class="mb-4 text-gray-200"><%= video.description %></div>
+      <% } %>
 
+      <!-- Hashtag -->
+      <div class="text-xs text-yellow-400 mb-6">#snapnews</div>
+
+      <!-- ───────── Share Button ───────── -->
+      <div class="text-center mb-8">
+        <button id="share-watch-btn"
+                class="bg-yellow-400 text-black font-semibold px-4 py-2 rounded hover:bg-yellow-300 transition">
+          🔗 Copy Link
+        </button>
+        <span id="share-msg" class="text-yellow-400 ml-3 opacity-0">Copied!</span>
+      </div>
+      <!-- ───────── End Share Button ───────── -->
+
+      <!-- ───────── Community Verdict (Voting) ───────── -->
+      <div 
+        class="snap-vote-card card-3d bg-gray-900 rounded-lg p-4 animate-glow-yellow"
+        data-videoid="<%= videoId %>">
+        <h4 class="text-xl font-semibold text-yellow-400 mb-3">Community Verdict</h4>
+        <div class="vote-buttons flex flex-wrap justify-center gap-3 mb-4">
+          <button class="snap-vote-btn bg-yellow-400 text-black font-semibold px-4 py-2 rounded hover:bg-yellow-300 transition"
+                  data-vote="verified">
+            ✅ Verified
+          </button>
+          <button class="snap-vote-btn bg-yellow-400 text-black font-semibold px-4 py-2 rounded hover:bg-yellow-300 transition"
+                  data-vote="fake">
+            ⚠️ Fake
+          </button>
+          <button class="snap-vote-btn bg-yellow-400 text-black font-semibold px-4 py-2 rounded hover:bg-yellow-300 transition"
+                  data-vote="satire">
+            🎭 Satire
+          </button>
+          <button class="snap-vote-btn bg-yellow-400 text-black font-semibold px-4 py-2 rounded hover:bg-yellow-300 transition"
+                  data-vote="context">
+            ❓ Context Needed
+          </button>
         </div>
-      <% }); %>
-    <% } %>
-  </div> <!-- end #feed -->
+        <div class="vote-results space-y-2">
+          <div class="flex items-center text-gray-200">
+            <span>✅ Verified <span class="vote-label-verified">0%</span></span>
+            <div class="bar-container flex-1 bg-gray-700 h-2 mx-3 rounded">
+              <div class="vote-bar-verified bar bg-yellow-400 h-full rounded"></div>
+            </div>
+          </div>
+          <div class="flex items-center text-gray-200">
+            <span>⚠️ Fake <span class="vote-label-fake">0%</span></span>
+            <div class="bar-container flex-1 bg-gray-700 h-2 mx-3 rounded">
+              <div class="vote-bar-fake bar bg-yellow-400 h-full rounded"></div>
+            </div>
+          </div>
+          <div class="flex items-center text-gray-200">
+            <span>🎭 Satire <span class="vote-label-satire">0%</span></span>
+            <div class="bar-container flex-1 bg-gray-700 h-2 mx-3 rounded">
+              <div class="vote-bar-satire bar bg-yellow-400 h-full rounded"></div>
+            </div>
+          </div>
+          <div class="flex items-center text-gray-200">
+            <span>❓ Context <span class="vote-label-context">0%</span></span>
+            <div class="bar-container flex-1 bg-gray-700 h-2 mx-3 rounded">
+              <div class="vote-bar-context bar bg-yellow-400 h-full rounded"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- ───────── End Community Verdict ───────── -->
 
-  <footer>
-    &copy; <%= new Date().getFullYear() %> SnapNews &middot; All rights reserved.
-  </footer>
+    </div>
 
-  <!-- ─────────── Timer + Share Script ─────────── -->
-  <script>
-    // Update countdown timers every second
-    function updateTimers() {
-      document.querySelectorAll('.video-card').forEach(function(card, idx) {
-        var dateStr = card.getAttribute('data-date');
-        var created = new Date(dateStr);
-        var now = new Date();
-        var msElapsed = now - created;
-        var msLeft = 24 * 60 * 60 * 1000 - msElapsed;
-        var timer = document.getElementById('timer-' + idx);
+    <!-- Include snapVote.js to handle voting -->
+    <script src="/js/snapVote.js"></script>
 
-        if (msLeft > 0) {
-          var h = Math.floor(msLeft / (1000 * 60 * 60));
-          var m = Math.floor((msLeft % (1000 * 60 * 60)) / (1000 * 60));
-          var s = Math.floor((msLeft % (1000 * 60)) / 1000);
-          timer.textContent = "Expires in: " +
-            (h < 10 ? "0" : "") + h + ":" +
-            (m < 10 ? "0" : "") + m + ":" +
-            (s < 10 ? "0" : "") + s;
-        } else {
-          timer.textContent = "Expired";
-        }
-      });
-    }
-    setInterval(updateTimers, 1000);
-    updateTimers();
-
-    // Share button logic
-    document.querySelectorAll('.share-btn').forEach(function(btn) {
-      btn.addEventListener('click', function() {
-        var url = window.location.origin + btn.getAttribute('data-path');
-        navigator.clipboard.writeText(url).then(function() {
-          var idx = btn.getAttribute('data-idx');
-          var msg = document.getElementById('copied-' + idx);
+    <!-- Share Button Script -->
+    <script>
+      document.getElementById('share-watch-btn').addEventListener('click', () => {
+        const url = window.location.href;
+        navigator.clipboard.writeText(url).then(() => {
+          const msg = document.getElementById('share-msg');
           msg.style.opacity = 1;
-          setTimeout(function() { msg.style.opacity = 0; }, 1800);
+          setTimeout(() => { msg.style.opacity = 0; }, 1800);
         });
       });
-    });
-  </script>
-
-  <!-- ─────────── COMMUNITY‐VOTE HANDLER ─────────── -->
-
-  <!-- ───────── END COMMUNITY‐VOTE HANDLER ───────── -->
-<script src="/js/snapVote.js"></script>
-</body>
+    </script>
+  </body>
 </html>
 
 
