@@ -46,10 +46,12 @@ document.querySelectorAll('.share-btn').forEach(btn => {
 // -----------------
 // Voting Logic
 // -----------------
+<script>
 document.querySelectorAll('.vote-button').forEach(btn => {
   btn.addEventListener('click', async () => {
     const videoId = btn.getAttribute('data-id');
     const voteType = btn.getAttribute('data-type');
+    const container = btn.closest('.snap-vote-card');
 
     if (!videoId || !voteType) {
       alert('Missing vote info.');
@@ -66,10 +68,9 @@ document.querySelectorAll('.vote-button').forEach(btn => {
       });
 
       const data = await res.json();
-
       if (res.ok) {
         alert(`You voted: ${voteType}`);
-        // Optionally: Update UI here with the vote result
+        fetchVotes(videoId, container); // ✅ Refresh bar
       } else {
         alert(data.message || 'Vote failed.');
       }
@@ -79,3 +80,24 @@ document.querySelectorAll('.vote-button').forEach(btn => {
     }
   });
 });
+
+// Fetch and update bar %s
+function fetchVotes(videoId, container) {
+  fetch(`https://snapbackend-new.onrender.com/api/votes/${videoId}`)
+    .then(res => res.json())
+    .then(data => {
+      const total = Object.values(data).reduce((a, b) => a + b, 0);
+      Object.entries(data).forEach(([key, count]) => {
+        const percent = total ? ((count / total) * 100).toFixed(1) : 0;
+        container.querySelector(`.vote-label-${key}`).textContent = `${percent}%`;
+        container.querySelector(`.vote-bar-${key}`).style.width = `${percent}%`;
+      });
+    });
+}
+
+// On page load: update all vote bars
+document.querySelectorAll('.snap-vote-card').forEach(container => {
+  const videoId = container.dataset.videoid;
+  fetchVotes(videoId, container);
+});
+</script>
