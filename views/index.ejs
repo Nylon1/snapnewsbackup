@@ -25,24 +25,11 @@
   <script src="https://cdn.tailwindcss.com"></script>
 
   <style>
-    /* ─── COSMIC BACKGROUND ─────────────────────────────────────────────────── */
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background:
-        #000                                       /* fallback black */
-        url('/img/cosmic.jpg')                /* subtle nebula (image 04) */
-        center center
-        / cover
-        no-repeat;
-    }
-    /* Optional: slight dark overlay for better contrast */
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.35); /* 35% black */
-      z-index: -1;
-    }
+   body {
+  font-family: 'Segoe UI', sans-serif;
+  background: #000; /* Pure black background */
+}
+
 /* ─── Flame Glow Animation ─────────────────────────────────────────────── */
 @keyframes flameGlow {
   0%, 100% {
