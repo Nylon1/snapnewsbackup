@@ -16,33 +16,37 @@
     }
 
     /* Glitch intro overlay */
-    .glitch-overlay {
-      position: fixed;
-      inset: 0;
-      background: #000;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      z-index: 50;
-      color: #facc15;
-      pointer-events: none;
-    }
-    .glitch-line {
-      font-size: 0.9rem;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      opacity: 0.8;
-      animation: glitchText 1.2s ease-in-out infinite alternate;
-    }
-    .glitch-main {
-      margin-top: 1.25rem;
-      font-size: 1.3rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.18em;
-      animation: glow 1.5s ease-in-out infinite alternate;
-    }
+  .glitch-overlay {
+  position: fixed;
+  inset: 0;
+  background: #000;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;   /* center vertically */
+  align-items: center;       /* center horizontally for the flex items */
+  text-align: center;        /* center multiline text */
+  z-index: 50;
+  color: #facc15;
+  pointer-events: none;
+}
+.glitch-line {
+  font-size: 0.9rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.8;
+  animation: glitchText 1.2s ease-in-out infinite alternate;
+}
+.glitch-main {
+  margin-top: 1.25rem;
+  font-size: 1.3rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  animation: glow 1.5s ease-in-out infinite alternate;
+  text-align: center;        /* ensure the big line is centered */
+}
+
+   
     @keyframes glitchText {
       0% { opacity: 0.2; transform: translateX(-2px); }
       40% { opacity: 0.9; transform: translateX(1px); }
