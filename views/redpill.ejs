@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>The Real World Manifesto – Red Pill</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Step outside the matrix and see real life. Learn why this platform exists – no filters, no algorithms, no fake influencers." />
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #000;
+    }
+
+    /* Glitch intro overlay */
+    .glitch-overlay {
+      position: fixed;
+      inset: 0;
+      background: #000;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 50;
+      color: #facc15;
+      pointer-events: none;
+    }
+    .glitch-line {
+      font-size: 0.9rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      opacity: 0.8;
+      animation: glitchText 1.2s ease-in-out infinite alternate;
+    }
+    .glitch-main {
+      margin-top: 1.25rem;
+      font-size: 1.3rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      animation: glow 1.5s ease-in-out infinite alternate;
+    }
+    @keyframes glitchText {
+      0% { opacity: 0.2; transform: translateX(-2px); }
+      40% { opacity: 0.9; transform: translateX(1px); }
+      70% { opacity: 0.5; transform: translateX(-1px); }
+      100% { opacity: 0.9; transform: translateX(0); }
+    }
+    @keyframes glow {
+      0% { text-shadow: 0 0 6px #facc15, 0 0 12px #facc15; }
+      100% { text-shadow: 0 0 16px #facc15, 0 0 30px #facc15; }
+    }
+
+    /* Section card glow */
+    .card-glow {
+      box-shadow:
+        0 0 30px rgba(0,0,0,0.8),
+        0 0 40px rgba(255,214,0,0.08);
+    }
+  </style>
+</head>
+<body class="text-white min-h-screen flex flex-col">
+
+  <!-- Glitch intro (auto hides after JS timeout) -->
+  <div id="glitchIntro" class="glitch-overlay">
+    <p class="glitch-line">Disconnecting from systems…</p>
+    <p class="glitch-line mt-1">Restoring human signal…</p>
+    <p class="glitch-main mt-6">Welcome to the Real World</p>
+  </div>
+
+  <!-- Simple back button / logo row -->
+  <header class="w-full flex items-center justify-between px-4 sm:px-8 py-4">
+    <a href="/"
+       class="text-xs sm:text-sm text-gray-300 hover:text-yellow-400 transition">
+      ← Back to home
+    </a>
+    <div class="flex items-center gap-2 text-yellow-400 text-xs sm:text-sm">
+      <span class="w-3 h-3 rounded-full bg-yellow-400 animate-pulse"></span>
+      <span>Real World Mode</span>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main class="flex-1 w-full flex justify-center px-4 pb-12">
+    <div class="w-full max-w-3xl">
+
+      <!-- Title -->
+      <section class="text-center mb-8">
+        <h1 class="text-3xl sm:text-4xl font-extrabold text-yellow-400 mb-3">
+          The Real World Manifesto
+        </h1>
+        <p class="text-gray-300 text-sm sm:text-base max-w-xl mx-auto">
+          You’ve spent years inside feeds designed to keep you scrolling.
+          This page explains why this platform exists – and why it refuses to
+          play by the rules of traditional social media.
+        </p>
+      </section>
+
+      <!-- 1. What’s wrong with the matrix -->
+      <section class="bg-[#111827] rounded-2xl p-6 sm:p-8 mb-6 card-glow">
+        <h2 class="text-xl sm:text-2xl font-bold mb-3 text-yellow-400">
+          The Problem: Life Through a Filter
+        </h2>
+        <p class="text-gray-300 text-sm sm:text-base mb-4">
+          Most platforms are built to keep you trapped. Algorithms decide what you see,
+          filters decide how you should look, and influencers decide how you should live.
+          You don’t choose reality – systems choose it for you.
+        </p>
+        <ul class="text-sm sm:text-base text-gray-200 space-y-2">
+          <li>• Feeds built to maximise watch time, not truth.</li>
+          <li>• Perfectly edited lives that no one actually lives.</li>
+          <li>• Outrage and drama pushed to the top because it keeps you hooked.</li>
+          <li>• You see countries, people and cultures only through someone else’s lens.</li>
+        </ul>
+      </section>
+
+      <!-- 2. What we do differently -->
+      <section class="bg-[#020617] rounded-2xl p-6 sm:p-8 mb-6 card-glow border border-yellow-400/30">
+        <h2 class="text-xl sm:text-2xl font-bold mb-3 text-yellow-400">
+          Our Answer: Reality, Not Performance
+        </h2>
+        <p class="text-gray-300 text-sm sm:text-base mb-4">
+          This platform is built on one simple idea: <span class="font-semibold text-yellow-300">
+          show the world as it really looks.</span>
+        </p>
+        <div class="grid sm:grid-cols-2 gap-4 text-sm sm:text-base">
+          <div class="space-y-2">
+            <h3 class="font-semibold text-white">No filters</h3>
+            <p class="text-gray-300">
+              What you record is what people see. No beauty filters, no altered faces,
+              no fake skies.
+            </p>
+
+            <h3 class="font-semibold text-white mt-4">No control by algorithms</h3>
+            <p class="text-gray-300">
+              We don’t try to hack your brain with an endless, addictive feed.
+              You choose what to watch.
+            </p>
+          </div>
+          <div class="space-y-2">
+            <h3 class="font-semibold text-white">No influencer worship</h3>
+            <p class="text-gray-300">
+              This isn’t built for influencers. It’s built for people. Every clip is just
+              a moment from someone’s real life.
+            </p>
+
+            <h3 class="font-semibold text-white mt-4">24-hour lifespan</h3>
+            <p class="text-gray-300">
+              Every video disappears after 24 hours. No archives, no permanent performance.
+              Just real life, in the moment.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. How to use it -->
+      <section class="bg-[#111827] rounded-2xl p-6 sm:p-8 mb-6 card-glow">
+        <h2 class="text-xl sm:text-2xl font-bold mb-3 text-yellow-400">
+          How to Use the Real World
+        </h2>
+        <ol class="list-decimal list-inside text-gray-200 text-sm sm:text-base space-y-2 mb-4">
+          <li>Record short clips of your real life – no fake set-ups, no acting.</li>
+          <li>Upload them and share a glimpse of your world – your street, your city, your food, your day.</li>
+          <li>Explore videos from other people around the world – see life through their eyes, not an algorithm.</li>
+          <li>Come back tomorrow. Everything will be different again.</li>
+        </ol>
+        <p class="text-gray-300 text-sm sm:text-base">
+          That’s it. No secret tricks. No growth hacks. No “build your personal brand”.
+          Just humans sharing reality with other humans.
+        </p>
+      </section>
+
+      <!-- 4. Closing quote + CTAs -->
+      <section class="text-center mt-8">
+        <p class="text-gray-200 text-sm sm:text-base max-w-xl mx-auto mb-6">
+          <span class="block mb-2 text-yellow-300 font-semibold">
+            “If you want to understand the world, you have to see it as it is.”
+          </span>
+          This platform is your window into that world – raw, unscripted and gone in 24 hours.
+        </p>
+
+        <div class="flex flex-col sm:flex-row justify-center items-center gap-4">
+          <a href="/feed"
+             class="watch-btn bg-white/10 hover:bg-white/20 text-white border border-white px-6 py-3 rounded-full text-sm sm:text-base">
+            Watch the Real World
+          </a>
+          <a href="/upload"
+             class="upload-btn bg-yellow-400 hover:bg-yellow-300 text-black font-bold px-6 py-3 rounded-full text-sm sm:text-base">
+            Share Your World
+          </a>
+        </div>
+
+        <p class="mt-4 text-xs text-gray-500">
+          No filters. No algorithms controlling you. No fake influencers. Just real life.
+        </p>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    // Hide glitch intro after ~1.8 seconds
+    window.addEventListener('load', () => {
+      const intro = document.getElementById('glitchIntro');
+      setTimeout(() => {
+        if (intro) {
+          intro.style.opacity = '0';
+          intro.style.transition = 'opacity 400ms ease-out';
+          setTimeout(() => intro.style.display = 'none', 450);
+        }
+      }, 1800);
+    });
+  </script>
+</body>
+</html>
