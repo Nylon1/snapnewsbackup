@@ -99,6 +99,11 @@ app.post('/admin/login', adminController.login);
 app.use('/admin', authenticateAdmin, adminRoutes);
 app.use('/public', publicRoutes);
 
+// Public Red Pill page
+app.get('/redpill', (req, res) => {
+  res.render('redpill'); // looks for views/redpill.ejs
+});
+
 // === Debug: List all mounted routes ===
 app.get('/routes', (req, res) => {
   const routes = app._router.stack
