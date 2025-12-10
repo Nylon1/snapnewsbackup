@@ -60,6 +60,7 @@ app.get('/cookies', (req, res) => res.render('cookies'));
 app.get('/contact', (req, res) => res.render('contact'));
 app.get('/signup', (req, res) => res.render('signup'));
 app.get('/login', (req, res) => res.render('login'));
+app.get('/redpill', (req, res) => res.render('redpill'));
 
 // 8. Start server
 app.listen(3000, () => console.log('SnapNews running on port 3000'));
