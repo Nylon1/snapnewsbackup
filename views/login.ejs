@@ -7,55 +7,84 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     body { font-family: 'Segoe UI', sans-serif; }
+    .glow-animate {
+      box-shadow:
+        0 0 32px 0 #ffd50088,
+        0 2px 16px #000a;
+      animation: snapanimate 2.2s ease-in-out infinite alternate;
+    }
+    @keyframes snapanimate {
+      0% {
+        box-shadow:
+          0 0 32px 0 #ffd50055,
+          0 2px 16px #000a;
+      }
+      55% {
+        box-shadow:
+          0 0 50px 0 #ffd500aa,
+          0 2px 24px #ffd50033,
+          0 2px 24px #000a;
+      }
+      100% {
+        box-shadow:
+          0 0 32px 0 #ffd500dd,
+          0 2px 16px #ffd50055,
+          0 2px 16px #000a;
+      }
+    }
   </style>
-
 </head>
-<style>
-  body { font-family: 'Segoe UI', sans-serif; }
-  .glow-animate {
-    box-shadow:
-      0 0 32px 0 #ffd50088,
-      0 2px 16px #000a;
-    animation: snapanimate 2.2s ease-in-out infinite alternate;
-  }
-  @keyframes snapanimate {
-    0% {
-      box-shadow:
-        0 0 32px 0 #ffd50055,
-        0 2px 16px #000a;
-    }
-    55% {
-      box-shadow:
-        0 0 50px 0 #ffd500aa,
-        0 2px 24px #ffd50033,
-        0 2px 24px #000a;
-    }
-    100% {
-      box-shadow:
-        0 0 32px 0 #ffd500dd,
-        0 2px 16px #ffd50055,
-        0 2px 16px #000a;
-    }
-  }
-</style>
 
 <body class="bg-black text-white min-h-screen flex items-center justify-center px-2">
   <div class="bg-[#181e29] w-full max-w-md p-5 sm:p-8 rounded-2xl shadow-lg glow-animate">
 
-
     <h2 class="text-2xl font-bold text-yellow-400 mb-1 text-center">Login</h2>
     <p class="mb-6 text-center text-gray-400">Access your SnapShnap account</p>
-    <form action="/login" method="POST" class="flex flex-col gap-4">
-      <input type="text" name="username" placeholder="Username or Email" required class="py-2 px-3 rounded bg-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400" />
-      <input type="password" name="password" placeholder="Password" required class="py-2 px-3 rounded bg-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400" />
-      <button type="submit" class="bg-yellow-400 text-black font-semibold py-2 rounded-lg hover:bg-yellow-300 transition text-lg">Login</button>
+
+    <!-- Remove action="/login" because we redirect manually -->
+    <form id="loginForm" class="flex flex-col gap-4">
+      <input id="username" type="text" placeholder="Username or Email" required
+        class="py-2 px-3 rounded bg-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400" />
+
+      <input id="password" type="password" placeholder="Password" required
+        class="py-2 px-3 rounded bg-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400" />
+
+      <button type="submit"
+        class="bg-yellow-400 text-black font-semibold py-2 rounded-lg hover:bg-yellow-300 transition text-lg">
+        Login
+      </button>
     </form>
+
     <div class="mt-4 text-center">
-      <a href="/signup" class="text-gray-400 hover:text-yellow-400 text-sm">Don’t have an account? Sign Up</a>
+      <a id="signupLink" href="#" class="text-gray-400 hover:text-yellow-400 text-sm">
+        Don’t have an account? Sign Up
+      </a>
     </div>
+
     <div class="mt-6 text-center">
       <a href="/" class="text-yellow-400 hover:underline text-xs">&larr; Back to Home</a>
     </div>
   </div>
+
+  <script>
+    // Your MediaCMS base URL
+    const MEDIA_BASE = "https://media.snapshnap.com";
+
+    // Handle Login click → redirect to MediaCMS login
+    document.getElementById("loginForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      // Optional: send user back to your homepage after login
+      const nextURL = encodeURIComponent("https://snapshnap.com");
+
+      window.location.href = `${MEDIA_BASE}/accounts/login/?next=${nextURL}`;
+    });
+
+    // Handle Sign Up redirect
+    document.getElementById("signupLink").addEventListener("click", function (e) {
+      e.preventDefault();
+      window.location.href = `${MEDIA_BASE}/accounts/signup/`;
+    });
+  </script>
 </body>
 </html>
